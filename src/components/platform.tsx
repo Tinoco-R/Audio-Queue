@@ -5,19 +5,29 @@ import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import { CardMedia } from '@mui/material';
 import Image from 'next/image';
+import userAuthenticationSpotify from '@/api/platformAuthentications/spotify/connection';
+import userAuthenticationYoutube from '@/api/platformAuthentications/youtube/connection';
+import userAuthenticationApple from '@/api/platformAuthentications/apple/connection';
+import userAuthenticationSoundcloud from '@/api/platformAuthentications/soundcloud/connection';
 
+
+// Needs to check if platform already correctly authenticated before proceeding with new/refreshing authentication
 function platformAuthentication(platform: string) {
     switch (platform) {
         case "Spotify":
+            userAuthenticationSpotify();
             return () => console.log("Authenticating with Spotify");
 
         case "YouTube":
+            userAuthenticationYoutube();
             return () => console.log("Authenticating with YouTube");
 
         case "Apple Music":
+            userAuthenticationApple();
             return () => console.log("Authenticating with Apple Music");
 
         case "SoundCloud":
+            userAuthenticationSoundcloud();
             return () => console.log("Authenticating with SoundCloud");
     }
 }

@@ -1,6 +1,6 @@
 // Spotify creating and sending an authorization request
-var client_id = "d6a4ad132f1e4a4299a8858f69e4b97a";
-var client_secret = "fcc363b86e0d4468ba8d8075274786ee";
+var client_id = process.env.SPOTIFY_CLIENT_ID;
+var client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 var redirectURI = "http://127.0.0.1:5500/src/index.html";
 
 var tokenURL  = "https://accounts.spotify.com/api/token";
