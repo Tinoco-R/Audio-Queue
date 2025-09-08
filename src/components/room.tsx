@@ -18,8 +18,8 @@ interface RoomProps{
     children?: React.ReactNode;
 };
 
-var client_id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
-var client_secret = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET;
+const client_id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
+const client_secret = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET;
 console.log("Client ID: ", client_id, "Client Secret:", client_secret);
 
 export default function Room({children}: RoomProps) {

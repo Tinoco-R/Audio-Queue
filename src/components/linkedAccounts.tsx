@@ -26,7 +26,7 @@ function SelectablePlatforms() {
     const cardSize = 66;
     const imgSize = 50;
 
-    let platforms = getLinkedPlatforms();
+    const platforms = getLinkedPlatforms();
 
     return (
         <div id="AccountsGrid" style={{display: "flex", flexWrap: "wrap", flexDirection: "row", gap: "0.25em", justifyContent: "center"}}>

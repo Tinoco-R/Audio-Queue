@@ -13,8 +13,8 @@ function getRandomSongName(): string {
 
 function getRandomPlatform() {
   const randomNumber = Math.floor(Math.random() * 4);
-  let cardSize=33;
-  let imgSize=25;
+  const cardSize=33;
+  const imgSize=25;
   
   switch(randomNumber) {
     case 0:
@@ -36,8 +36,8 @@ function getRandomPlatform() {
 }
 
 function generateResult() {
-    let left = 10;
-    let right = 12 - left;
+    const left = 10;
+    const right = 12 - left;
     return(
         <Grid container direction={"row"} display={"flex"}>
             <Grid size={left}>
