@@ -23,8 +23,8 @@ function LinkablePlatforms() {
 
 // To be used in the media search page
 function SelectablePlatforms() {
-    let cardSize = 66;
-    let imgSize = 50;
+    const cardSize = 66;
+    const imgSize = 50;
 
     let platforms = getLinkedPlatforms();
 
