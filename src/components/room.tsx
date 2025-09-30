@@ -18,13 +18,10 @@ interface RoomProps{
     children?: React.ReactNode;
 };
 
-const client_id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
-const client_secret = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET;
-console.log("Client ID: ", client_id, "Client Secret:", client_secret);
-
 export default function Room({children}: RoomProps) {
     return(
         <div>
+            <h1 style={{display: "flex", justifyContent: "center", fontSize: 100}}>Room</h1>
             {/*General Room container*/}
             <Grid container spacing={2}>
                 <Grid size={6}>

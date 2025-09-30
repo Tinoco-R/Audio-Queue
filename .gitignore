@@ -1,3 +1,6 @@
+# Environment Variables containing Client ID / Secret
+.env.local
+
 # Logs
 logs
 *.log

@@ -1,17 +1,16 @@
 'use client';
 import React from "react";
-import LinkablePlatforms from "../components/linkedAccounts";
-import Room from "@/components/room";
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import LinkablePlatforms from "@/components/linkedAccounts"
 
 export default function MyPage() {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
     return(
         <div>
-            
-            <h1 style={{display:"flex", justifyContent: "center", fontSize: "100px", fontFamily: "serif"}}>Linkable Platforms</h1>
-            <LinkablePlatforms></LinkablePlatforms>
-
-            <h1 style={{display: "flex", justifyContent: "center", fontSize: 100}}>Room</h1>
-            <Room></Room>
+            <button type="button" onClick={() => router.push('/linkPlatforms')}>Link Platforms</button>
+            <button type="button" onClick={() => router.push('/room')}>Room</button> 
         </div>
     )
 }

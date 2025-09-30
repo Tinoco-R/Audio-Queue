@@ -7,16 +7,40 @@ function getLinkedPlatforms() {
     return([false, false, false, false]);
 }
 
+// Based on whether a platform is linked or not, assign it the correct source image destination
+function getPlatformSources(linkedPlatforms: boolean[]) {
+    const spotifySources    = ["/spotify/Primary_Logo_Green_RGB.svg"      , "/spotify/Spotify_Primary_Logo_RGB_White.png"];
+    const youtubeSources    = ["/youtube/yt_icon_red_digital.png"         , "/youtube/yt_icon_white_digital.png"];
+    const appleSources      = ["/apple/Apple_Music_Icon_RGB_sm_073120.svg", "/apple/Apple_Music_Icon_wht_sm_073120.svg"];
+    const soundcloudSources = ["/soundcloud/soundcloud.svg"               , "/soundcloud/cloudmark-white-transparent.png"];
+    
+    let sources = [spotifySources, youtubeSources, appleSources, soundcloudSources];
+    let finalSources = [];
+
+    // Loop through platforms and assign correct src (left is linked (colored), right is unlinked (white))
+    for (let i = 0; i < linkedPlatforms.length; i++) {
+        let src = sources[i][linkedPlatforms[i] ? 0 : 1];
+        finalSources.push(src);
+    }
+    return finalSources;
+}
+
 // To be used in the platform linkage page
 function LinkablePlatforms() {
     const cardSize = 400;
     const imgSize = 300;
+    const platforms = getLinkedPlatforms();
+    const platformSources = getPlatformSources(platforms);
+
     return (
-        <div id="AccountsGrid" style={{display: "flex", flexWrap: "wrap", flexDirection: "row", gap: "1em", justifyContent: "center"}}>
-            <Platform cardSize={cardSize} imgSize={imgSize - 20}  platform="Spotify"     src="/spotify/Primary_Logo_Green_RGB.svg"      ></Platform>
-            <Platform cardSize={cardSize} imgSize={imgSize + 100} platform="YouTube"     src="/youtube/yt_icon_red_digital.png"         ></Platform>
-            <Platform cardSize={cardSize} imgSize={imgSize - 50}  platform="Apple Music" src="/apple/Apple_Music_Icon_RGB_sm_073120.svg"></Platform>
-            <Platform cardSize={cardSize} imgSize={imgSize + 40}  platform="SoundCloud"  src="/soundcloud/soundcloud.svg"               ></Platform>
+        <div>
+            <h1 style={{display:"flex", justifyContent: "center", fontSize: "100px", fontFamily: "serif"}}>Linkable Platforms</h1>
+            <div id="AccountsGrid" style={{display: "flex", flexWrap: "wrap", flexDirection: "row", gap: "1em", justifyContent: "center"}}>
+                <Platform linked={platforms[0]} cardSize={cardSize} imgSize={imgSize - 20}  platform="Spotify"     src={platformSources[0]}></Platform>
+                <Platform linked={platforms[1]} cardSize={cardSize} imgSize={imgSize + 100} platform="YouTube"     src={platformSources[1]}></Platform>
+                <Platform linked={platforms[2]} cardSize={cardSize} imgSize={imgSize - 50}  platform="Apple Music" src={platformSources[2]}></Platform>
+                <Platform linked={platforms[3]} cardSize={cardSize} imgSize={imgSize + 40}  platform="SoundCloud"  src={platformSources[3]}></Platform>
+            </div>
         </div>
     )
 }
@@ -25,7 +49,6 @@ function LinkablePlatforms() {
 function SelectablePlatforms() {
     const cardSize = 66;
     const imgSize = 50;
-
     const platforms = getLinkedPlatforms();
 
     return (
@@ -36,22 +59,6 @@ function SelectablePlatforms() {
             <Platform disabled={platforms[3]} cardSize={cardSize} imgSize={imgSize}  platform="SoundCloud"  src="/soundcloud/soundcloud.svg"                 ></Platform>
         </div>
     )
-}
-
-function PlatformsLink() {
-    return(
-        <div>
-            <LinkablePlatforms></LinkablePlatforms>
-        </div>
-    );
-}
-
-function PlatformsSelect() {
-    return(
-        <div>
-            <SelectablePlatforms></SelectablePlatforms>
-        </div>
-    );
 }
 
 export { LinkablePlatforms };

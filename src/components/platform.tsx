@@ -10,25 +10,20 @@ import userAuthenticationYoutube from '@/api/platformAuthentications/youtube/con
 import userAuthenticationApple from '@/api/platformAuthentications/apple/connection';
 import userAuthenticationSoundcloud from '@/api/platformAuthentications/soundcloud/connection';
 
-
 // Needs to check if platform already correctly authenticated before proceeding with new/refreshing authentication
 function platformAuthentication(platform: string) {
     switch (platform) {
         case "Spotify":
-            userAuthenticationSpotify();
-            return () => console.log("Authenticating with Spotify");
+            return () =>  userAuthenticationSpotify();
 
         case "YouTube":
-            userAuthenticationYoutube();
-            return () => console.log("Authenticating with YouTube");
+            return () =>  userAuthenticationYoutube();
 
         case "Apple Music":
-            userAuthenticationApple();
-            return () => console.log("Authenticating with Apple Music");
+            return () =>  userAuthenticationApple();
 
         case "SoundCloud":
-            userAuthenticationSoundcloud();
-            return () => console.log("Authenticating with SoundCloud");
+            return () =>  userAuthenticationSoundcloud();
     }
 }
 
@@ -39,15 +34,18 @@ interface PlatformProps {
     cardSize: number;
     imgSize: number;
     disabled?: boolean;
+    linked?: boolean;
 }
 
-export default function Platform({platform, src, children, cardSize, imgSize, disabled}: PlatformProps) {
+export default function Platform({platform, src, children, cardSize, imgSize, disabled, linked}: PlatformProps) {
     const displayValue = disabled ? "none" : "block";
+    const linkedValue  = linked   ? false : true;
+
     return (
         <div style={{display: displayValue}}>
             <Button style={{borderRadius: "20%"}} onClick={platformAuthentication(platform)}>
                 <Card 
-                    style={{backgroundColor: "white",
+                    style={{backgroundColor: linked ? "white" : "black",
                             width: `${cardSize}px`,
                             height: `${cardSize}px`,
                             display: "flex",
@@ -57,7 +55,7 @@ export default function Platform({platform, src, children, cardSize, imgSize, di
                 >
                     <CardMedia>
                         <Box style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
-                            <Image src={src} alt={platform} width={imgSize} height={imgSize} />
+                            <Image src={src} alt={platform} width={imgSize} height={imgSize} fetchPriority='auto' />
                         </Box>
                     </CardMedia>
                 </Card>
