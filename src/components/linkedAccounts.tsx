@@ -12,6 +12,15 @@ function getLinkedPlatforms() {
         let key = keys[i];
         linked[i] = localStorage.getItem(key) ? true : false;
     }
+
+    // Final check to ensure last updated platform change becomes visible
+    const platforms = ["Spotify", "YouTube", "Apple Music", "SoundCloud"];
+    const lastPlatform = localStorage.getItem("last_platform");
+
+    if (lastPlatform) {
+        const platformIndex = platforms.indexOf(lastPlatform);
+        linked[platformIndex] = true;
+    }
     return linked;
 }
 
