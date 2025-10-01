@@ -2,6 +2,7 @@
 import * as React from 'react';
 import SearchTop from './searchtop';
 import MediaPlayer from './mediaPlayer';
+import MusicPlayerSlider from './mediaMui';
 import Queue from './queue';
 import Attendees from './attendees';
 import Grid from '@mui/material/Grid';
@@ -35,7 +36,7 @@ export default function Room({children}: RoomProps) {
 
                 <Grid size={6}>
                     <Item>
-                        <MediaPlayer></MediaPlayer>
+                        <MusicPlayerSlider></MusicPlayerSlider>
                     </Item>
                 </Grid>
 

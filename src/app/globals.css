@@ -2,3 +2,8 @@ body {
     background-color: gray;
     color: black;
 }
+
+#mediaImage {
+    border: 15px solid black;
+    padding: 5px;
+}
