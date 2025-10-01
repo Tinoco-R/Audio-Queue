@@ -1,4 +1,5 @@
 'use client';
+import React, { useState } from 'react';
 import { SelectablePlatforms } from "./linkedAccounts";
 
 interface SearchTopProps{
@@ -6,6 +7,33 @@ interface SearchTopProps{
 };
 
 export default function SearchTop({children}: SearchTopProps) {
+    const [inputValue, setInputValue] = useState('');
+    const [isEnterPressed, setIsEnterPressed] = useState(false);
+
+    // Searches for song using available platforms
+    const searchFunction = () => {
+        console.log(`Searching for: ${inputValue}`);
+        // Gets all linked platforms
+
+        // Begins looking for the song until found on any linked platform
+        // Needs: Artist, Title, Album Name, Image, Song File
+
+    };
+
+    // Udpates inputValue as the user continues typing
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(e.target.value);
+    };
+    
+    // If user presses "Enter", triggers searchFunction
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            setIsEnterPressed(true);
+            searchFunction();
+        }
+    };
+
     return(
         <div>
             <div id="topSearch" style={{display: "flex", flexWrap: "nowrap", justifyContent: "space-between"}}>
@@ -14,7 +42,7 @@ export default function SearchTop({children}: SearchTopProps) {
             </div>
 
             <div id="searchBar">
-                <input style={{width: "100%", height: 40, background: "gray", borderRadius: "80px / 60px"}}></input>
+                <input type="search" value={inputValue} onChange={handleChange} onKeyDown={handleKeyDown} style={{width: "100%", height: 40, background: "gray", borderRadius: "20px", fontSize: "25px"}}></input>
             </div>
             {children}
         </div>

@@ -83,9 +83,9 @@ function SelectablePlatforms() {
 
     return (
         <div id="AccountsGrid" style={{display: "flex", flexWrap: "wrap", flexDirection: "row", gap: "0.25em", justifyContent: "center"}}>
-            <Platform linked={linkedPlatforms[0]} disabled={disabledPlatforms[0]} selectable={true} cardSize={cardSize} imgSize={imgSize}  platform="Spotify"     src="/spotify/Spotify_Primary_Logo_RGB_Black.png" altSrc="/spotify/Spotify_Primary_Logo_RGB_White.png"></Platform>
-            <Platform linked={linkedPlatforms[1]} disabled={disabledPlatforms[1]} selectable={true} cardSize={cardSize} imgSize={imgSize + 5}  platform="YouTube"     src="/youtube/youtube.svg"                        altSrc="/youtube/yt_icon_white_digital.png"></Platform>
-            <Platform linked={linkedPlatforms[2]} disabled={disabledPlatforms[2]} cardSize={cardSize} imgSize={imgSize}  platform="Apple Music" src="/apple/Apple_Music_Icon_blk_sm_073120.svg"   altSrc="/apple/Apple_Music_Icon_wht_sm_073120.svg"></Platform>
+            <Platform linked={linkedPlatforms[0]} disabled={disabledPlatforms[0]} selectable={true} cardSize={cardSize} imgSize={imgSize}      platform="Spotify"     src="/spotify/Spotify_Primary_Logo_RGB_Black.png" altSrc="/spotify/Spotify_Primary_Logo_RGB_White.png"></Platform>
+            <Platform linked={linkedPlatforms[1]} disabled={disabledPlatforms[1]} selectable={true} cardSize={cardSize} imgSize={imgSize + 20} platform="YouTube"     src="/youtube/yt_icon_almostblack_digital.png"    altSrc="/youtube/yt_icon_white_digital.png"></Platform>
+            <Platform linked={linkedPlatforms[2]} disabled={disabledPlatforms[2]} selectable={true} cardSize={cardSize} imgSize={imgSize}      platform="Apple Music" src="/apple/Apple_Music_Icon_blk_sm_073120.svg"   altSrc="/apple/Apple_Music_Icon_wht_sm_073120.svg"></Platform>
             <Platform linked={linkedPlatforms[3]} disabled={disabledPlatforms[3]} selectable={true} cardSize={cardSize} imgSize={imgSize + 8}  platform="SoundCloud"  src="/soundcloud/soundcloud.svg"                  altSrc="/soundcloud/cloudmark-white-transparent.png"></Platform>
         </div>
     )

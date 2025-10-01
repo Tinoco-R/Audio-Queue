@@ -39,7 +39,7 @@ export default function generateResult() {
     return(
         <Grid container direction={"row"} display={"flex"}>
             <Grid size={left}>
-                <Item style={{display: "flex", justifyContent: "flex-start",  alignItems: "center", fontSize: 40, height: "40%"}}>
+                <Item style={{display: "flex", justifyContent: "flex-start",  alignItems: "center", fontSize: 30, height: "40%"}}>
                     {getRandomSongName()}
                 </Item>
             </Grid>
