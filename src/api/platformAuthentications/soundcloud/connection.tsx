@@ -50,15 +50,14 @@ function getAccessCode() {
 }
 
 function fetchAccessToken(code: string | null) {
-    console.log("Fetching access token with code:", code)
     let accessToken = null;
 
     const code_verifier = localStorage.getItem("code_verifier");
     localStorage.removeItem("code_verifier");
 
     let body = "grant_type=authorization_code";
-    body += "&client_id=" + client_id
-    body += "&client_secret=" + client_secret
+    body += "&client_id=" + client_id;
+    body += "&client_secret=" + client_secret;
     body += "&redirect_uri=" + encodeURI(redirectURI);
     body += "&code_verifier=" + code_verifier;
     body += "&code=" + code;

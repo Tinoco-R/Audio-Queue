@@ -55,7 +55,7 @@ export default function Platform({platform, src, children, cardSize, imgSize, di
                 >
                     <CardMedia>
                         <Box style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
-                            <Image src={src} alt={platform} width={imgSize} height={imgSize} fetchPriority='auto' />
+                            <Image src={src} priority={true} alt={platform} width={imgSize} height={imgSize} />
                         </Box>
                     </CardMedia>
                 </Card>
