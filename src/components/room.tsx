@@ -29,20 +29,24 @@ export default function Room({children}: RoomProps) {
                         <SearchTop></SearchTop>
                     </Item>
                     
-                    {/*Search results (left) and used platform container (right)*/}    
-                    <SearchResults></SearchResults>                
+                    <SearchResults></SearchResults>
                 </Grid>
+
 
                 <Grid size={6}>
                     <Item>
                         <MediaPlayer></MediaPlayer>
                     </Item>
                 </Grid>
+
+
                 <Grid size={6}>
                     <Item>
                         <Queue></Queue>
                     </Item>
                 </Grid>
+
+
                 <Grid size={6}>
                     <Item>
                         <Attendees></Attendees>

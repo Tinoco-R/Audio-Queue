@@ -9,6 +9,7 @@ import userAuthenticationSpotify from '@/api/platformAuthentications/spotify/con
 import userAuthenticationYoutube from '@/api/platformAuthentications/youtube/connection';
 import userAuthenticationApple from '@/api/platformAuthentications/apple/connection';
 import userAuthenticationSoundcloud from '@/api/platformAuthentications/soundcloud/connection';
+import { useState } from 'react';
 
 // Needs to check if platform already correctly authenticated before proceeding with new/refreshing authentication
 function platformAuthentication(platform: string) {
@@ -30,22 +31,42 @@ function platformAuthentication(platform: string) {
 interface PlatformProps {
     platform: string;
     src: string;
+    altSrc?: string;
     children?: React.ReactNode;
     cardSize: number;
     imgSize: number;
     disabled?: boolean;
     linked?: boolean;
+    selectable?: boolean;
+    display?: boolean;
 }
 
-export default function Platform({platform, src, children, cardSize, imgSize, disabled, linked}: PlatformProps) {
+export default function Platform({platform, src, altSrc, children, cardSize, imgSize, disabled, linked, selectable, display}: PlatformProps) {
     const displayValue = disabled ? "none" : "block";
     const linkedValue  = linked   ? false : true;
+   
+    const [currentSrc, setCurrentSrc] = useState(src);
+    let alt = altSrc ? altSrc : "";
+
+    function setNewSrc(newSrc: string) {
+        setCurrentSrc(newSrc);
+    }
+
+    function switchSourceHandler() {
+        if (currentSrc == src) {
+            setNewSrc(alt);
+        }
+        else {
+            setNewSrc(src);
+        }
+        return () => {};
+    };
 
     return (
         <div style={{display: displayValue}}>
-            <Button style={{borderRadius: "20%"}} onClick={platformAuthentication(platform)}>
+            <Button style={{borderRadius: "20%"}} disabled={display} onClick={selectable ? switchSourceHandler : platformAuthentication(platform)}>
                 <Card 
-                    style={{backgroundColor: linked ? "white" : "black",
+                    style={{backgroundColor: linked && currentSrc === src ? "white" : "black",
                             width: `${cardSize}px`,
                             height: `${cardSize}px`,
                             display: "flex",
@@ -55,7 +76,7 @@ export default function Platform({platform, src, children, cardSize, imgSize, di
                 >
                     <CardMedia>
                         <Box style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
-                            <Image src={src} priority={true} alt={platform} width={imgSize} height={imgSize} />
+                            <Image src={currentSrc} priority={true} alt={platform} width={imgSize} height={imgSize} />
                         </Box>
                     </CardMedia>
                 </Card>

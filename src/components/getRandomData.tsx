@@ -17,16 +17,16 @@ function getRandomPlatform() {
   
   switch(randomNumber) {
     case 0:
-      return <Platform disabled={false} cardSize={cardSize} imgSize={imgSize} platform="Spotify" src="/spotify/Spotify_Primary_Logo_RGB_Black.png" />;
+      return <Platform disabled={false} display={true} cardSize={cardSize} imgSize={imgSize} platform="Spotify" src="/spotify/Spotify_Primary_Logo_RGB_White.png" />;
     
     case 1:
-      return <Platform disabled={false} cardSize={cardSize} imgSize={imgSize} platform="YouTube" src="/youtube/youtube.svg" />;
+      return <Platform disabled={false} display={true} cardSize={cardSize} imgSize={imgSize + 10} platform="YouTube" src="/youtube/yt_icon_white_digital.png" />;
     
     case 2:
-      return <Platform disabled={false} cardSize={cardSize} imgSize={imgSize} platform="Apple Music" src="/apple/Apple_Music_Icon_blk_sm_073120.svg" />;
+      return <Platform disabled={false} display={true} cardSize={cardSize} imgSize={imgSize} platform="Apple Music" src="/apple/Apple_Music_Icon_wht_sm_073120.svg" />;
     
     case 3:
-      return <Platform disabled={false} cardSize={cardSize} imgSize={imgSize} platform="SoundCloud" src="/soundcloud/soundcloud.svg" />;
+      return <Platform disabled={false} display={true} cardSize={cardSize} imgSize={imgSize + 10} platform="SoundCloud" src="/soundcloud/cloudmark-white-transparent.png" />;
     
     default:
       return null;

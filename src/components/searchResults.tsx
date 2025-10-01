@@ -11,6 +11,9 @@ export default function SearchResults({children}: SearchResultsProps) {
             {generateResult()}
             {generateResult()}
             {generateResult()}
+            {generateResult()}
+            {generateResult()}
+            {generateResult()}
             {children}
         </div>
     );
