@@ -27,50 +27,9 @@ function requestSpotifyAuthorization() {
     window.location.href = url;
 }
 
-export function handleRedirectSpotify() {
+export async function handleRedirectSpotify() {
     const code = getAccessCode();
-    const accessToken = fetchAccessToken(code);
-}
-
-function fetchAccessToken(code: string | null) {
-    let accessToken = null;
-    let body = "grant_type=authorization_code";
-    body += "&code=" + code;
-    body += "&redirect_uri=" + encodeURI(redirectURI);
-    
-    let authHeader = getAuthHeader();
-
-    accessToken = callAuthorizationApi(body, authHeader);
-
-    return accessToken;
-}
-
-function callAuthorizationApi(body: string, header: string) {
-    let accessToken = null;
-    fetch(tokenURL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Authorization": "Basic " + header,
-        },
-        body: body
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data)
-
-        if (data.access_token != undefined) {
-            accessToken = data.access_token;
-            localStorage.setItem("access_token_spotify", accessToken);
-        }
-        if (data.refresh_token != undefined) {
-            const refreshToken = data.refresh_token;
-            localStorage.setItem("refresh_token_spotify", refreshToken);
-        }
-    })
-    .catch(error => console.error('Error:', error));
-
-    return accessToken;
+    const accessToken = await fetchAccessToken(code);
 }
 
 function getAccessCode() {
@@ -80,6 +39,50 @@ function getAccessCode() {
 
     code = params.get("code");
     return code;
+}
+
+async function fetchAccessToken(code: string | null): Promise<string | null> {
+    let accessToken = null;
+    let body = "grant_type=authorization_code";
+    body += "&code=" + code;
+    body += "&redirect_uri=" + encodeURI(redirectURI);
+    
+    let authHeader = getAuthHeader();
+
+    accessToken = await callAuthorizationApi(body, authHeader);
+
+    return accessToken;
+}
+
+async function callAuthorizationApi(body: string, header: string): Promise<string | null> {
+    let accessToken = null;
+    const response = await fetch(tokenURL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": "Basic " + header,
+        },
+        body: body
+    });
+
+    if (!response.ok) {
+        console.error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    console.log("Data", data);
+
+    if (data.access_token != undefined) {
+        accessToken = data.access_token;
+        localStorage.setItem("access_token_spotify", accessToken);
+    }
+    if (data.refresh_token != undefined) {
+        const refreshToken = data.refresh_token;
+        localStorage.setItem("refresh_token_spotify", refreshToken);
+    }
+
+    return accessToken;
 }
 
 function refreshAccessToken() {

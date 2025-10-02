@@ -30,9 +30,9 @@ function requestYoutubeAuthorization() {
     window.location.href = url;
 }
 
-export function handleRedirectYoutube() {
+export async function handleRedirectYoutube() {
     const [code, scope] = getAccessCodeAndScope();
-    const accessToken = fetchAccessToken(code);
+    const accessToken = await fetchAccessToken(code);
 }
 
 function getAccessCodeAndScope() {
@@ -46,7 +46,7 @@ function getAccessCodeAndScope() {
     return [code, scope];
 }
 
-function fetchAccessToken(code: string | null) {
+async function fetchAccessToken(code: string | null): Promise<string | null> {
     let accessToken = null;
 
     let body = "grant_type=authorization_code";
@@ -57,34 +57,38 @@ function fetchAccessToken(code: string | null) {
 
     let authHeader = getAuthHeader();
     
-    accessToken = callAuthorizationApi(body, authHeader);
+    accessToken = await callAuthorizationApi(body, authHeader);
 
     return accessToken;
 }
 
-function callAuthorizationApi(body: string, header: string) {
+async function callAuthorizationApi(body: string, header: string): Promise<string | null> {
     let accessToken = null;
-    fetch(tokenURL, {
+    const response = await fetch(tokenURL, {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
             "Authorization": "Basic " + header,
         },
         body: body
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Data", data)
-        if (data.access_token != undefined) {
-            accessToken = data.access_token;
-            localStorage.setItem("access_token_youtube", accessToken);
-        }
-        if (data.refresh_token != undefined) {
-            const refreshToken = data.refresh_token;
-            localStorage.setItem("refresh_token_youtube", refreshToken);
-        }
-    })
-    .catch(error => console.error('Error:', error));
+    });
+
+    if (!response.ok) {
+        console.error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    console.log("Data", data);
+
+    if (data.access_token != undefined) {
+        accessToken = data.access_token;
+        localStorage.setItem("access_token_youtube", accessToken);
+    }
+    if (data.refresh_token != undefined) {
+        const refreshToken = data.refresh_token;
+        localStorage.setItem("refresh_token_youtube", refreshToken);
+    }
 
     return accessToken;
 }

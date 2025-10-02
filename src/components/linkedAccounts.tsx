@@ -13,22 +13,7 @@ function getLinkedPlatforms(returnDisabled = false) {
         linked[i] = localStorage.getItem(key) ? true : false;
     }
 
-    // Final check to ensure last updated platform change becomes visible
-    const platforms = ["Spotify", "YouTube", "Apple Music", "SoundCloud"];
-    const lastPlatform = localStorage.getItem("last_platform");
-
-    if (lastPlatform) {
-        const platformIndex = platforms.indexOf(lastPlatform);
-        linked[platformIndex] = true;
-    }
-
-    // Inverses results when toggle enabled
-    if (returnDisabled) {
-        for (let i = 0; i < linked.length; i++) {
-            linked[i] = !linked[i];            
-        }
-    }
-    return linked;
+    return !returnDisabled ? linked : linked.map(v => !v);
 }
 
 // Returns platforms that should be disabled in the room setting (unlinked)
@@ -61,6 +46,7 @@ function LinkablePlatforms() {
     const linkedPlatforms = getLinkedPlatforms();
     const platformSources = getPlatformSources(linkedPlatforms);
 
+    console.log(linkedPlatforms);
     return (
         <div>
             <h1 style={{display:"flex", justifyContent: "center", fontSize: "100px", fontFamily: "serif"}}>Linkable Platforms</h1>

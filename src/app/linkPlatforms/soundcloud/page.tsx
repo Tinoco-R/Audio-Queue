@@ -7,9 +7,13 @@ export default function LinkSoundcloud() {
     const router = useRouter()
     
     useEffect(() => {
-        handleRedirectSoundcloud();
-        router.push('/linkPlatforms');
-    });
+        async function redirect() {
+            await handleRedirectSoundcloud();
+            router.push('/linkPlatforms');
+        }
+        
+        redirect();
+    }, []);
 
     return null;
 }

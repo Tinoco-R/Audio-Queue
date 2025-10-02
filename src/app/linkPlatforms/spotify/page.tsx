@@ -9,9 +9,13 @@ export default function LinkSoundcloud() {
     const searchParams = useSearchParams()
 
     useEffect(() => {
-        handleRedirectSpotify();
-        router.push('/linkPlatforms');
-    });
+        async function redirect() {
+            await handleRedirectSpotify();
+            router.push('/linkPlatforms');
+        }
+        
+        redirect();
+    }, []);
 
     return null;
 }

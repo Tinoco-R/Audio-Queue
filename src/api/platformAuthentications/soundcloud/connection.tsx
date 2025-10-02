@@ -35,9 +35,9 @@ function requestSoundcloudAuthorization() {
     window.location.href = url;
 }
 
-export function handleRedirectSoundcloud() {
+export async function handleRedirectSoundcloud() {
     const code = getAccessCode();
-    const accessToken = fetchAccessToken(code);
+    const accessToken = await fetchAccessToken(code);
 }
 
 function getAccessCode() {
@@ -49,7 +49,7 @@ function getAccessCode() {
     return code;
 }
 
-function fetchAccessToken(code: string | null) {
+async function fetchAccessToken(code: string | null): Promise<string | null> {
     let accessToken = null;
 
     const code_verifier = localStorage.getItem("code_verifier");
@@ -64,34 +64,38 @@ function fetchAccessToken(code: string | null) {
 
     let authHeader = getAuthHeader();
     
-    accessToken = callAuthorizationApi(body, authHeader);
+    accessToken = await callAuthorizationApi(body, authHeader);
 
     return accessToken;
 }
 
-function callAuthorizationApi(body: string, header: string) {
+async function callAuthorizationApi(body: string, header: string): Promise<string | null> {
     let accessToken = null;
-    fetch(tokenURL, {
+    const response = await fetch(tokenURL, {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
             "Authorization": "Basic " + header,
         },
         body: body
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Data", data)
-        if (data.access_token != undefined) {
-            accessToken = data.access_token;
-            localStorage.setItem("access_token_soundcloud", accessToken);
-        }
-        if (data.refresh_token != undefined) {
-            const refreshToken = data.refresh_token;
-            localStorage.setItem("refresh_token_soundcloud", refreshToken);
-        }
-    })
-    .catch(error => console.error('Error:', error));
+    });
+
+    if (!response.ok) {
+        console.error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    console.log("Data", data);
+
+    if (data.access_token != undefined) {
+        accessToken = data.access_token;
+        localStorage.setItem("access_token_soundcloud", accessToken);
+    }
+    if (data.refresh_token != undefined) {
+        const refreshToken = data.refresh_token;
+        localStorage.setItem("refresh_token_soundcloud", refreshToken);
+    }
 
     return accessToken;
 }

@@ -9,9 +9,13 @@ export default function LinkSoundcloud() {
     const searchParams = useSearchParams()
 
     useEffect(() => {
-        handleRedirectApple();
-        router.push('/linkPlatforms');
-    });
-
+        async function redirect() {
+            await handleRedirectApple();
+            router.push('/linkPlatforms');
+        }
+        
+        redirect();
+    }, []);
+    
     return null;
 }
