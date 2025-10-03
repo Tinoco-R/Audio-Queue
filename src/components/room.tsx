@@ -1,6 +1,7 @@
 'use client';
 import * as React from 'react';
 import SearchTop from './searchtop';
+import { SearchResults } from './searchtop';
 import MediaPlayer from './mediaPlayer';
 import MusicPlayerSlider from './mediaMui';
 import Queue from './queue';
@@ -9,7 +10,6 @@ import Grid from '@mui/material/Grid';
 import { Item, ItemBlack } from './item';
 import { SelectablePlatforms } from './linkedAccounts';
 import Platform from './platform';
-import SearchResults from './searchResults';
 
 function getSearchResults(query: string, platforms: boolean[]) {
 

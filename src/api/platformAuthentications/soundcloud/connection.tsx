@@ -6,9 +6,11 @@ import { generateCodeVerifier, createCodeChallenge, setValueIfNotExists } from "
 const client_id = process.env.NEXT_PUBLIC_SOUNDCLOUD_CLIENT;
 const client_secret = process.env.NEXT_PUBLIC_SOUNDCLOUD_CLIENT_SECRET;
 
+//const redirectURI = "http://127.0.0.1:3000/linkPlatforms/soundcloud";
 const redirectURI = "https://www.audioqueue.dev/linkPlatforms/soundcloud";
-const authURL   = "https://secure.soundcloud.com/authorize";
-const tokenURL = "https://secure.soundcloud.com/oauth/token";
+const authURL     = "https://secure.soundcloud.com/authorize";
+const tokenURL    = "https://secure.soundcloud.com/oauth/token";
+const trackURL    = "https://api.soundcloud.com/tracks";
 
 function getAuthHeader() {
     return btoa(client_id + ":" + client_secret);
@@ -98,4 +100,84 @@ async function callAuthorizationApi(body: string, header: string): Promise<strin
     }
 
     return accessToken;
+}
+
+export async function getTracks(query: string): Promise<{[key: string]: any }[]> {
+    const accessToken = localStorage.getItem("access_token_soundcloud");
+
+    if (!accessToken) {
+        console.error('No access token found');
+        return [];
+    }
+
+    let url = trackURL;
+
+    url += "?q=" + encodeURIComponent(query);
+    url += "&access=playable";
+    url += "&limit=5";
+
+    const response = await fetch(url, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            "Accept": "application/json; charset=utf-8",
+        },
+    })
+
+    if (!response.ok) {
+            console.error(`Failed to fetch tracks: ${response.statusText}`);
+            return [];
+        }
+
+    const data = await response.json();
+    const tracksData = [];
+
+    for (let i = 0; i < data.length; i++) {
+        const item = data[i];
+        const trackObject: Record<string, string> = {
+            artist: item.user.username,
+            title: item.title,
+            album: "", // TBD for soundcloud (perhaps use other service etc.)
+            artwork: item.artwork_url,
+            urn: item.urn,
+            trackUrl: await getStreamableUrl(item.urn)
+        }
+        tracksData.push(trackObject);
+    }    
+    return tracksData;
+}
+
+export async function getStreamableUrl(urn: string): Promise<string> {
+    const accessToken = localStorage.getItem("access_token_soundcloud");
+
+    if (!accessToken) {
+        console.error('No access token found');
+        return "-1";
+    }
+
+    let url = trackURL;
+
+    url += `/${urn}/streams`;
+
+    const response = await fetch(url, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            "Accept": "application/json; charset=utf-8",
+        },
+    })
+
+    if (!response.ok) {
+        console.error(`Failed to fetch streamable URL: ${response.statusText}`);
+        return "-1";
+    }
+
+    // Returns urls of type: http_mp3_128_url, hls_mp3_128_url, hls_opus_64_url, as well as preview
+    const data = await response.json();
+    const http_mp3_128_url    = data.http_mp3_128_url;
+    const hls_mp3_128_url     = data.hls_mp3_128_url;
+    const hls_opus_64_url     = data.hls_opus_64_url;
+    const preview_mp3_128_url = data.preview_mp3_128_url;
+
+    return http_mp3_128_url;
 }

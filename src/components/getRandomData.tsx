@@ -3,6 +3,7 @@ import { Grid } from "@mui/material";
 import { Item, ItemBlack } from "./item";
 import Platform from "./platform";
 
+// DEVELOPMENT ONLY TESTING (REMOVE)
 function getRandomSongName(): string {
   const songNames = ["Cool Song", "Rockstar", "Electric Dreams", "Lost in Music"];
   const bandNames = ["Some Band", "Guitar Heroes", "Riff Masters", "Melody Makers"];
@@ -10,6 +11,7 @@ function getRandomSongName(): string {
   return `${songNames[Math.floor(Math.random() * songNames.length)]} - ${bandNames[Math.floor(Math.random() * bandNames.length)]}`;
 }
 
+// DEVELOPMENT ONLY TESTING (REMOVE)
 function getRandomPlatform() {
   const randomNumber = Math.floor(Math.random() * 4);
   const cardSize=33;
@@ -33,7 +35,7 @@ function getRandomPlatform() {
   }
 }
 
-export default function generateResult() {
+export default function generateResultRandom() {
     const left = 10;
     const right = 12 - left;
     return(

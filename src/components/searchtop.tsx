@@ -1,6 +1,10 @@
 'use client';
 import React, { useState } from 'react';
 import { SelectablePlatforms } from "./linkedAccounts";
+import { getTracks as getTracksSoundcloud } from '@/api/platformAuthentications/soundcloud/connection';
+import generateSearchResult from './searchResults';
+import { createRoot, Container  } from 'react-dom/client';
+import { addToQueue } from './queue';
 
 interface SearchTopProps{
     children?: React.ReactNode;
@@ -24,15 +28,37 @@ export default function SearchTop({children}: SearchTopProps) {
     }
 
     // Searches for song using available platforms
-    const searchFunction = () => {
+    async function searchFunction() {
         // Gets all selected platforms
         const selected = getSelectedPlatforms();
-        console.log("Selected:", selected);
 
         // Begins looking for the song until found on any linked platform
+        const tracks = await getTracksSoundcloud(inputValue.toString())
         
-        // Needs: Artist, Title, Album Name, Image, Song File
+        // Needs: Album Name (soundcloud)
+        
+        // Generate Search Results
+        const parent  = document.getElementById("searchResultsParent");
 
+        // Render search results
+        for (let i = 0; i < tracks.length; i++) {
+            const track = tracks[i];
+            const result = generateSearchResult("SoundCloud", track);
+
+            // Creates a child node to render result onto
+            const childNode = await document.createElement('div');
+            childNode.id = `SearchResult${i}`;
+            if (childNode) {
+                childNode.onclick = () => addToQueue(track);
+            }
+
+            if (parent) {
+                parent.appendChild(childNode);
+            }
+
+            const child = createRoot(document.getElementById(`SearchResult${i}`) as Container);
+            child.render(result);
+        }
     };
 
     // Udpates inputValue as the user continues typing
@@ -59,6 +85,17 @@ export default function SearchTop({children}: SearchTopProps) {
             <div id="searchBar">
                 <input type="search" value={inputValue} onChange={handleChange} onKeyDown={handleKeyDown} style={{width: "100%", height: 40, background: "gray", borderRadius: "20px", fontSize: "25px"}}></input>
             </div>
+            {children}
+        </div>
+    );
+}
+
+interface SearchResultsProps{
+    children?: React.ReactNode;
+};
+export function SearchResults({children}: SearchResultsProps) {
+    return(
+        <div id='searchResultsParent'>
             {children}
         </div>
     );
