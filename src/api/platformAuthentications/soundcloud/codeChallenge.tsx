@@ -36,6 +36,9 @@ export function generateCodeVerifier() {
 
 // Sets a value in local storage provided it doesn't exist yet
 export function setValueIfNotExists(key: string, value: string): void {
+    if (typeof window === 'undefined') {
+        return;
+    }
     if (!localStorage.getItem(key)) {
         const stringValue = JSON.stringify(value).replace(/"/g, '');
         localStorage.setItem(key, stringValue);
