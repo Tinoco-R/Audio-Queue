@@ -12,7 +12,7 @@ export default function SearchTop({children}: SearchTopProps) {
 
     // Finds and returns selected platforms via class name
     function getSelectedPlatforms() {
-        let selected: string[] = [];
+        const selected: string[] = [];
         const platforms = Array.from(document.querySelectorAll('[class*="Active"]')).map(el => el.className);
 
         platforms.forEach(platform => {
