@@ -46,7 +46,6 @@ function LinkablePlatforms() {
     const linkedPlatforms = getLinkedPlatforms();
     const platformSources = getPlatformSources(linkedPlatforms);
 
-    console.log(linkedPlatforms);
     return (
         <div>
             <h1 style={{display:"flex", justifyContent: "center", fontSize: "100px", fontFamily: "serif"}}>Linkable Platforms</h1>
@@ -55,6 +54,24 @@ function LinkablePlatforms() {
                 <Platform linked={linkedPlatforms[1]} cardSize={cardSize} imgSize={imgSize + 100} platform="YouTube"     src={platformSources[1]}></Platform>
                 <Platform linked={linkedPlatforms[2]} cardSize={cardSize} imgSize={imgSize - 50}  platform="Apple Music" src={platformSources[2]}></Platform>
                 <Platform linked={linkedPlatforms[3]} cardSize={cardSize} imgSize={imgSize + 40}  platform="SoundCloud"  src={platformSources[3]}></Platform>
+            </div>
+        </div>
+    )
+}
+
+// To be used in the platform linkage page
+function LinkablePlatformsSkeleton() {
+    const cardSize = 400;
+    const imgSize = 300;
+
+    return (
+        <div>
+            <h1 style={{display:"flex", justifyContent: "center", fontSize: "100px", fontFamily: "serif"}}>Linkable Platforms</h1>
+            <div id="AccountsGrid" style={{display: "flex", flexWrap: "wrap", flexDirection: "row", gap: "1em", justifyContent: "center"}}>
+                <Platform cardSize={cardSize} imgSize={imgSize - 20}  platform="Spotify"     src="null" selectable={true} ></Platform>
+                <Platform cardSize={cardSize} imgSize={imgSize + 100} platform="YouTube"     src="null" selectable={true} ></Platform>
+                <Platform cardSize={cardSize} imgSize={imgSize - 50}  platform="Apple Music" src="null" selectable={true} ></Platform>
+                <Platform cardSize={cardSize} imgSize={imgSize + 40}  platform="SoundCloud"  src="null" selectable={true} ></Platform>
             </div>
         </div>
     )
@@ -77,7 +94,5 @@ function SelectablePlatforms() {
     )
 }
 
-export { LinkablePlatforms };
+export { LinkablePlatforms, LinkablePlatformsSkeleton, SelectablePlatforms };
 export default LinkablePlatforms;
-
-export { SelectablePlatforms };

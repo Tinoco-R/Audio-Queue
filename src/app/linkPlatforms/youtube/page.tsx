@@ -1,12 +1,11 @@
 'use client'
 import { handleRedirectYoutube } from '@/api/platformAuthentications/youtube/connection';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react';
+import { LinkablePlatformsSkeleton } from '@/components/linkedAccounts';
 
 export default function LinkSoundcloud() {
     const router = useRouter()
-    const pathname = usePathname()
-    const searchParams = useSearchParams()
 
     useEffect(() => {
         async function redirect() {
@@ -17,5 +16,7 @@ export default function LinkSoundcloud() {
         redirect();
     }, []);
 
-    return null;
+    return(
+        <LinkablePlatformsSkeleton></LinkablePlatformsSkeleton>
+    );
 }

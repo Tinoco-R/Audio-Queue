@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import { CardMedia } from '@mui/material';
+import CircularIndeterminate from "./loadingCircle";
 import Image from 'next/image';
 import userAuthenticationSpotify from '@/api/platformAuthentications/spotify/connection';
 import userAuthenticationYoutube from '@/api/platformAuthentications/youtube/connection';
@@ -62,6 +63,17 @@ export default function Platform({platform, src, altSrc, children, cardSize, img
         return () => {};
     };
 
+    const renderImage = () => {
+        if (src === "null" || src === "") {
+            return <CircularIndeterminate></CircularIndeterminate>;
+        }
+        return (
+            <Box style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
+                <Image src={currentSrc} priority={true} alt={platform} width={imgSize} height={imgSize} />
+            </Box>
+        );
+    };
+
     return (
         <div style={{display: displayValue}}>
             <Button style={{borderRadius: "20%"}} disabled={display} onClick={selectable ? switchSourceHandler : platformAuthentication(platform)}>
@@ -76,7 +88,7 @@ export default function Platform({platform, src, altSrc, children, cardSize, img
                 >
                     <CardMedia>
                         <Box style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
-                            <Image src={currentSrc} priority={true} alt={platform} width={imgSize} height={imgSize} />
+                            {renderImage()}
                         </Box>
                     </CardMedia>
                 </Card>

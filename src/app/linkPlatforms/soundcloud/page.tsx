@@ -2,6 +2,7 @@
 import { handleRedirectSoundcloud } from '@/api/platformAuthentications/soundcloud/connection';
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react';
+import { LinkablePlatformsSkeleton } from '@/components/linkedAccounts';
 
 export default function LinkSoundcloud() {
     const router = useRouter()
@@ -15,5 +16,7 @@ export default function LinkSoundcloud() {
         redirect();
     }, []);
 
-    return null;
+    return(
+        <LinkablePlatformsSkeleton></LinkablePlatformsSkeleton>
+    );
 }
