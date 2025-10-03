@@ -55,7 +55,7 @@ async function fetchAccessToken(code: string | null): Promise<string | null> {
     body += "&client_id=" + client_id
     body += "&client_secret=" + client_secret
 
-    let authHeader = getAuthHeader();
+    const authHeader = getAuthHeader();
     
     accessToken = await callAuthorizationApi(body, authHeader);
 

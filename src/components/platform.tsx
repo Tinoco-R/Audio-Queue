@@ -47,18 +47,20 @@ export default function Platform({platform, src, altSrc, children, cardSize, img
     const linkedValue  = linked   ? false : true;
    
     const [currentSrc, setCurrentSrc] = useState(src);
-    let alt = altSrc ? altSrc : "";
+    const [isSelected, setSelected] = useState("");
+    const alt = altSrc ? altSrc : "";
 
-    function setNewSrc(newSrc: string) {
+    function setNewSrc(newSrc: string, selected: string) {
+        setSelected(selected);
         setCurrentSrc(newSrc);
     }
 
     function switchSourceHandler() {
         if (currentSrc == src) {
-            setNewSrc(alt);
+            setNewSrc(alt, "Active");
         }
         else {
-            setNewSrc(src);
+            setNewSrc(src, "");
         }
         return () => {};
     };
@@ -75,7 +77,7 @@ export default function Platform({platform, src, altSrc, children, cardSize, img
     };
 
     return (
-        <div style={{display: displayValue}}>
+        <div style={{display: displayValue}} className={`${platform} ${isSelected}`}>
             <Button style={{borderRadius: "20%"}} disabled={display} onClick={selectable ? switchSourceHandler : platformAuthentication(platform)}>
                 <Card 
                     style={{backgroundColor: linked && currentSrc === src ? "white" : "black",

@@ -6,10 +6,10 @@ import { link } from "fs";
 // Returns platforms that the search will be able to use per user platform authorizations
 function getLinkedPlatforms(returnDisabled = false) {
     const keys = ["access_token_spotify", "access_token_youtube", "access_token_apple_music", "access_token_soundcloud"];
-    let linked = [];
+    const linked = [];
 
     for (let i = 0; i < keys.length; i++) {
-        let key = keys[i];
+        const key = keys[i];
         linked[i] = localStorage.getItem(key) ? true : false;
     }
 
@@ -28,12 +28,12 @@ function getPlatformSources(linkedPlatforms: boolean[]) {
     const appleSources      = ["/apple/Apple_Music_Icon_RGB_sm_073120.svg", "/apple/Apple_Music_Icon_wht_sm_073120.svg"];
     const soundcloudSources = ["/soundcloud/soundcloud.svg"               , "/soundcloud/cloudmark-white-transparent.png"];
     
-    let sources = [spotifySources, youtubeSources, appleSources, soundcloudSources];
-    let finalSources = [];
+    const sources = [spotifySources, youtubeSources, appleSources, soundcloudSources];
+    const finalSources = [];
 
     // Loop through platforms and assign correct src (left is linked (colored), right is unlinked (white))
     for (let i = 0; i < linkedPlatforms.length; i++) {
-        let src = sources[i][linkedPlatforms[i] ? 0 : 1];
+        const src = sources[i][linkedPlatforms[i] ? 0 : 1];
         finalSources.push(src);
     }
     return finalSources;

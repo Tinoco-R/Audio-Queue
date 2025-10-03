@@ -47,7 +47,7 @@ async function fetchAccessToken(code: string | null): Promise<string | null> {
     body += "&code=" + code;
     body += "&redirect_uri=" + encodeURI(redirectURI);
     
-    let authHeader = getAuthHeader();
+    const authHeader = getAuthHeader();
 
     accessToken = await callAuthorizationApi(body, authHeader);
 
@@ -86,8 +86,8 @@ async function callAuthorizationApi(body: string, header: string): Promise<strin
 }
 
 function refreshAccessToken() {
-    let header = getAuthHeader();
-    let refreshToken = localStorage.getItem("refresh_token_spotify");
+    const header = getAuthHeader();
+    const refreshToken = localStorage.getItem("refresh_token_spotify");
     let body = "grant_type=refresh_token";
     body += "&refresh_token=" + refreshToken;
     body += "&client_id" + client_id;
@@ -110,9 +110,9 @@ async function getProfile(accessToken: string | null) {
 
 async function searchSpotify(accessToken: string | null) {
     accessToken = localStorage.getItem("access_token_spotify");
-    let query = "q=Glass Heart";
-    let type = "track";
-    let include_external = "audio";
+    const query = "q=Glass Heart";
+    const type = "track";
+    const include_external = "audio";
 
     let url = searchURL;
     url += "?q=" + encodeURIComponent(query);

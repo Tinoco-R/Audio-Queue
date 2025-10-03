@@ -14,7 +14,7 @@ export default function LinkSoundcloud() {
         }
         
         redirect();
-    }, []);
+    }, [router]);
 
     return(
         <LinkablePlatformsSkeleton></LinkablePlatformsSkeleton>

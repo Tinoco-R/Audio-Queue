@@ -62,7 +62,7 @@ async function fetchAccessToken(code: string | null): Promise<string | null> {
     body += "&code_verifier=" + code_verifier;
     body += "&code=" + code;
 
-    let authHeader = getAuthHeader();
+    const authHeader = getAuthHeader();
     
     accessToken = await callAuthorizationApi(body, authHeader);
 

@@ -10,12 +10,27 @@ export default function SearchTop({children}: SearchTopProps) {
     const [inputValue, setInputValue] = useState('');
     const [isEnterPressed, setIsEnterPressed] = useState(false);
 
+    // Finds and returns selected platforms via class name
+    function getSelectedPlatforms() {
+        let selected: string[] = [];
+        const platforms = Array.from(document.querySelectorAll('[class*="Active"]')).map(el => el.className);
+
+        platforms.forEach(platform => {
+            const platformName = platform.replace(/Active$/, '').trim();
+            selected.push(platformName);
+        });
+
+        return selected;
+    }
+
     // Searches for song using available platforms
     const searchFunction = () => {
-        console.log(`Searching for: ${inputValue}`);
-        // Gets all linked platforms
+        // Gets all selected platforms
+        const selected = getSelectedPlatforms();
+        console.log("Selected:", selected);
 
         // Begins looking for the song until found on any linked platform
+        
         // Needs: Artist, Title, Album Name, Image, Song File
 
     };

@@ -12,7 +12,7 @@ export function createCodeChallenge(codeVerifier: string): string {
     const hashBuffer = createHash('sha256').update(uint8Array).digest();
     
     // Base64UrlEncode the hash
-    let base64UrlEncoded = Buffer.from(hashBuffer).toString('base64')
+    const base64UrlEncoded = Buffer.from(hashBuffer).toString('base64')
         .replace(/\+/g, '-')
         .replace(/\//g, '_')
         .replace(/=/g, '');
@@ -35,7 +35,7 @@ export function generateCodeVerifier() {
 }
 
 // Sets a value in local storage provided it doesn't exist yet
-export function setValueIfNotExists(key: string, value: any): void {
+export function setValueIfNotExists(key: string, value: string): void {
     if (!localStorage.getItem(key)) {
         const stringValue = JSON.stringify(value).replace(/"/g, '');
         localStorage.setItem(key, stringValue);
