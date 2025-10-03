@@ -2,7 +2,7 @@
 const client_id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
 const client_secret = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET;
 
-const redirectURI = "http://127.0.0.1:3000/linkPlatforms/spotify";
+const redirectURI = "https://www.audioqueue.dev/linkPlatforms/spotify";
 const tokenURL  = "https://accounts.spotify.com/api/token";
 const authURL   = "https://accounts.spotify.com/authorize";
 const searchURL = "https://api.spotify.com/v1/search";

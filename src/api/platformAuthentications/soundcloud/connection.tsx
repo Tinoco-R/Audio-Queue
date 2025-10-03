@@ -6,7 +6,7 @@ import { generateCodeVerifier, createCodeChallenge, setValueIfNotExists } from "
 const client_id = process.env.NEXT_PUBLIC_SOUNDCLOUD_CLIENT;
 const client_secret = process.env.NEXT_PUBLIC_SOUNDCLOUD_CLIENT_SECRET;
 
-const redirectURI = "http://127.0.0.1:3000/linkPlatforms/soundcloud";
+const redirectURI = "https://www.audioqueue.dev/linkPlatforms/soundcloud";
 const authURL   = "https://secure.soundcloud.com/authorize";
 const tokenURL = "https://secure.soundcloud.com/oauth/token";
 

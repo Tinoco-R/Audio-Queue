@@ -5,7 +5,7 @@ const public_key = process.env.NEXT_PUBLIC_KEY_YT;
 const client_id = process.env.NEXT_PUBLIC_AUTH_YOUTUBE_CLIENT;
 const client_secret = process.env.NEXT_PUBLIC_AUTH_YOUTUBE_CLIENT_SECRET;
 
-const redirectURI = "http://127.0.0.1:3000/linkPlatforms/youtube";
+const redirectURI = "https://www.audioqueue.dev/linkPlatforms/youtube";
 const authURL   = "https://accounts.google.com/o/oauth2/v2/auth";
 const tokenURL = "https://oauth2.googleapis.com/token";
 const scope = "https://www.googleapis.com/auth/youtube.readonly"
