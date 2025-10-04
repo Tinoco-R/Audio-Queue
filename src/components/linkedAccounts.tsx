@@ -6,7 +6,7 @@ import Platform from "./platform";
 function getLinkedPlatforms(returnDisabled = false) {
     const keys = ["access_token_spotify", "access_token_youtube", "access_token_apple_music", "access_token_soundcloud"];
     const linked = [];
-    const serverSide = localStorage? false : true;
+    const serverSide = typeof window !== 'undefined';
 
     if (serverSide) {
         return [false, false, false, false];
