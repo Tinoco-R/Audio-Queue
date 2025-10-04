@@ -49,7 +49,9 @@ export default function SearchTop({children}: SearchTopProps) {
             const childNode = await document.createElement('div');
             childNode.id = `SearchResult${i}`;
             if (childNode) {
-                childNode.onclick = () => addToQueue(track);
+                childNode.onclick = () => {
+                    addToQueue(track, result);
+                }
             }
 
             if (parent) {

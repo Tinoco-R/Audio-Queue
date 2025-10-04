@@ -33,6 +33,7 @@ export default function generateSearchResult(platform: string, trackObject: Reco
     const artwork   = trackObject.artwork;
     const urn       = trackObject.urn;
     const trackUrl  = trackObject.trackUrl;
+    const duration  = trackObject.duration;
 
     const left = 10;
     const right = 12 - left;

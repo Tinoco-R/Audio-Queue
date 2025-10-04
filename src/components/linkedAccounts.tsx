@@ -4,12 +4,13 @@ import Platform from "./platform";
 
 // Returns platforms that the search will be able to use per user platform authorizations
 function getLinkedPlatforms(returnDisabled = false) {
-    if (typeof window === 'undefined') {
-        return [false, false, false, false];
-    }
-    
     const keys = ["access_token_spotify", "access_token_youtube", "access_token_apple_music", "access_token_soundcloud"];
     const linked = [];
+    const serverSide = localStorage? false : true;
+
+    if (serverSide) {
+        return [false, false, false, false];
+    }
 
     for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
@@ -17,11 +18,6 @@ function getLinkedPlatforms(returnDisabled = false) {
     }
 
     return !returnDisabled ? linked : linked.map(v => !v);
-}
-
-// Returns platforms that should be disabled in the room setting (unlinked)
-function getDisabledPlatforms() {
-
 }
 
 // Based on whether a platform is linked or not, assign it the correct source image destination

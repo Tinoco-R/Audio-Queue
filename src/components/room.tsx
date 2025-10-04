@@ -30,8 +30,9 @@ export default function Room({children}: RoomProps) {
                         <SearchTop></SearchTop>
                     </Item>
                     <br></br>
-                    
-                    <SearchResults></SearchResults>
+                    <Item>
+                        <SearchResults></SearchResults>
+                    </Item>
                 </Grid>
 
 

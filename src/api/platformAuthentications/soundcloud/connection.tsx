@@ -1,13 +1,14 @@
 'use client'
 
+import { duration } from "@mui/material";
 import { generateCodeVerifier, createCodeChallenge, setValueIfNotExists } from "./codeChallenge";
 
 // Soundcloud creating and sending an authorization request
 const client_id = process.env.NEXT_PUBLIC_SOUNDCLOUD_CLIENT;
 const client_secret = process.env.NEXT_PUBLIC_SOUNDCLOUD_CLIENT_SECRET;
 
-//const redirectURI = "http://127.0.0.1:3000/linkPlatforms/soundcloud";
-const redirectURI = "https://www.audioqueue.dev/linkPlatforms/soundcloud";
+const redirectURI = "http://127.0.0.1:3000/linkPlatforms/soundcloud";
+//const redirectURI = "https://www.audioqueue.dev/linkPlatforms/soundcloud";
 const authURL     = "https://secure.soundcloud.com/authorize";
 const tokenURL    = "https://secure.soundcloud.com/oauth/token";
 const trackURL    = "https://api.soundcloud.com/tracks";
@@ -140,7 +141,8 @@ export async function getTracks(query: string): Promise<Record<string, string>[]
             album: "", // TBD for soundcloud (perhaps use other service etc.)
             artwork: item.artwork_url,
             urn: item.urn,
-            trackUrl: await getStreamableUrl(item.urn)
+            trackUrl: await getStreamableUrl(item.urn),
+            duration: Math.floor(item.duration / 1000).toString(),
         }
         tracksData.push(trackObject);
     }    
@@ -178,6 +180,5 @@ export async function getStreamableUrl(urn: string): Promise<string> {
     const hls_mp3_128_url     = data.hls_mp3_128_url;
     const hls_opus_64_url     = data.hls_opus_64_url;
     const preview_mp3_128_url = data.preview_mp3_128_url;
-
     return http_mp3_128_url;
 }
