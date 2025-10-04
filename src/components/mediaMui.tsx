@@ -88,9 +88,12 @@ export default function MusicPlayerSlider() {
                 if (play) {
                     togglePlay?.click();
                 }
-                setPosition(0);
-                setTrackObject(event.data.payload);
-                setPaused(false);
+                
+                setTimeout(() => {
+                    setPosition(0);
+                    setTrackObject(event.data.payload);
+                    setPaused(false);
+                }, 1);
             }
         };
         window.addEventListener('message', listener);

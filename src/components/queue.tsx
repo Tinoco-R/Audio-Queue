@@ -9,10 +9,16 @@ function getNumberOfTracksInQueue(parent: HTMLElement):number {
 function skipToTrack(trackObject: Record<string, string>, childTrack: HTMLElement, parent: HTMLElement) {
     let currentChild = parent.firstChild;
 
+    // Removes all songs before selected song from queue
     while (currentChild && currentChild !== childTrack) {
         const nextChild = currentChild.nextSibling;
         parent.removeChild(currentChild);
         currentChild = nextChild;
+    }
+
+    // Removes selected song from queue
+    if (currentChild) {
+        parent.removeChild(currentChild);
     }
     window.parent.postMessage({ type: 'SKIP_TO_TRACK', payload: trackObject }, '*');
 }
