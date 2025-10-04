@@ -1,5 +1,4 @@
 'use client'
-
 import { duration } from "@mui/material";
 import { generateCodeVerifier, createCodeChallenge, setValueIfNotExists } from "./codeChallenge";
 
@@ -7,11 +6,24 @@ import { generateCodeVerifier, createCodeChallenge, setValueIfNotExists } from "
 const client_id = process.env.NEXT_PUBLIC_SOUNDCLOUD_CLIENT;
 const client_secret = process.env.NEXT_PUBLIC_SOUNDCLOUD_CLIENT_SECRET;
 
-const redirectURI = "http://127.0.0.1:3000/linkPlatforms/soundcloud";
-//const redirectURI = "https://www.audioqueue.dev/linkPlatforms/soundcloud";
+const redirectURILocalHost = "http://127.0.0.1:3000/linkPlatforms/soundcloud";
+const redirectURI = "https://www.audioqueue.dev/linkPlatforms/soundcloud";
 const authURL     = "https://secure.soundcloud.com/authorize";
 const tokenURL    = "https://secure.soundcloud.com/oauth/token";
 const trackURL    = "https://api.soundcloud.com/tracks";
+
+function isLocalhost() {
+    const hostname = window.location.hostname;
+    return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]";
+}
+
+const getRedirectURI = () => {
+    console.log("isLocalhost", isLocalhost())
+    if (isLocalhost()) {
+        return redirectURILocalHost;
+    }
+    return redirectURI;
+};
 
 function getAuthHeader() {
     return btoa(client_id + ":" + client_secret);
@@ -32,7 +44,7 @@ function requestSoundcloudAuthorization() {
 
     url += "?client_id=" + client_id;
     url += "&response_type=code";
-    url += "&redirect_uri=" + encodeURI(redirectURI);
+    url += "&redirect_uri=" + encodeURI(getRedirectURI());
     url += "&code_challenge=" + codeChallenge;
     url += "&code_challenge_method=S256";
     window.location.href = url;
