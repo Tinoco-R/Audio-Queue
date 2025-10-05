@@ -1,7 +1,27 @@
 'use client';
-import { Grid } from "@mui/material";
+import { Grid, IconButton} from "@mui/material";
 import { Item, ItemBlack } from "./item";
 import Platform from "./platform";
+import CancelIcon from '@mui/icons-material/Cancel';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+    palette: {
+        primary: {
+        main: '#ff3535ff',
+        },
+    },
+});
+
+function removeButton() {
+    return(
+        <ThemeProvider theme={theme}>
+            <IconButton color="primary" className="remove" aria-label="cancel">
+                <CancelIcon className="remove"/>
+            </IconButton>
+        </ThemeProvider>
+    );
+}
 
 function getPlatformLogo(platform: string) {
     const randomNumber = Math.floor(Math.random() * 4);
@@ -26,7 +46,7 @@ function getPlatformLogo(platform: string) {
     }
 }
 
-export default function generateSearchResult(platform: string, trackObject: Record<string, string>) {
+export default function generateResult(platform: string, trackObject: Record<string, string>, isQueueResult: boolean = false) {
     const artist    = trackObject.artist;
     const title     = trackObject.title;
     const album     = trackObject.album;
@@ -38,16 +58,18 @@ export default function generateSearchResult(platform: string, trackObject: Reco
     const left = 10;
     const right = 12 - left;
     const height = "60%";
+
     return(
         <Grid container direction={"row"} display={"flex"}>
             <Grid size={left}>
-                <Item style={{display: "flex", justifyContent: "flex-start",  alignItems: "center", fontSize: 20, height: height}}>
+                <Item className="trackMetadataParent" style={{display: "flex", justifyContent: "flex-start",  alignItems: "center", fontSize: 20, height: height}}>
                     {`${title} - ${artist}`}
                 </Item>
             </Grid>
             <Grid size={right}>
-                <ItemBlack style={{display: "flex", justifyContent: "center", alignItems: "center", height: height}}>
+                <ItemBlack id="logoParent" className="logoParent" style={{display: "flex", justifyContent: "center", alignItems: "center", height: height}}>
                     {getPlatformLogo(platform)}
+                    {isQueueResult? removeButton() : ""}
                 </ItemBlack>
             </Grid>
         </Grid>

@@ -77,7 +77,7 @@ export default function Platform({platform, src, altSrc, children, cardSize, img
     };
 
     return (
-        <div style={{display: displayValue}} className={`${platform} ${isSelected}`}>
+        <div style={{display: displayValue}} className={`Platform ${platform} ${isSelected}`}>
             <Button style={{borderRadius: "20%"}} disabled={display} onClick={selectable ? switchSourceHandler : platformAuthentication(platform)}>
                 <Card 
                     style={{backgroundColor: linked && currentSrc === src ? "white" : "black",

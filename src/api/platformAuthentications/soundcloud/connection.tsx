@@ -18,7 +18,6 @@ function isLocalhost() {
 }
 
 const getRedirectURI = () => {
-    console.log("isLocalhost", isLocalhost())
     if (isLocalhost()) {
         return redirectURILocalHost;
     }
@@ -100,8 +99,6 @@ async function callAuthorizationApi(body: string, header: string): Promise<strin
     }
 
     const data = await response.json();
-
-    console.log("Data", data);
 
     if (data.access_token != undefined) {
         accessToken = data.access_token;

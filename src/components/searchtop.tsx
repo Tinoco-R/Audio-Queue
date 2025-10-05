@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { SelectablePlatforms } from "./linkedAccounts";
 import { getTracks as getTracksSoundcloud } from '@/api/platformAuthentications/soundcloud/connection';
-import generateSearchResult from './searchResults';
+import generateResult from './searchResults';
 import { createRoot, Container  } from 'react-dom/client';
 import { addToQueue } from './queue';
 
@@ -43,14 +43,14 @@ export default function SearchTop({children}: SearchTopProps) {
         // Render search results
         for (let i = 0; i < tracks.length; i++) {
             const track = tracks[i];
-            const result = generateSearchResult("SoundCloud", track);
+            const result = generateResult("SoundCloud", track);
 
             // Creates a child node to render result onto
             const childNode = await document.createElement('div');
             childNode.id = `SearchResult${i}`;
             if (childNode) {
                 childNode.onclick = () => {
-                    addToQueue(track, result);
+                    addToQueue(track);
                 }
             }
 
@@ -98,7 +98,8 @@ interface SearchResultsProps{
 export function SearchResults({children}: SearchResultsProps) {
     return(
         <div id='searchResultsParent'>
-            {children}
+            <h1>Search Results</h1>
+                {children}
         </div>
     );
 }

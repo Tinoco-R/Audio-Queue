@@ -1,12 +1,19 @@
-import { patch } from '@mui/material';
 import { createRoot, Container  } from 'react-dom/client';
+import generateResult from './searchResults';
+
+function removeFromQueue(child: HTMLElement, parent: HTMLElement) {
+    // Check if both elements exist before attempting removal
+    if (child && parent) {
+        parent.removeChild(child);
+    }
+}
 
 function getNumberOfTracksInQueue(parent: HTMLElement):number {
     return parent.children.length;
 }
 
 // Removes all tracks before selected track in queue and plays track in media player
-function skipToTrack(trackObject: Record<string, string>, childTrack: HTMLElement, parent: HTMLElement) {
+export function skipToTrack(trackObject: Record<string, string>, childTrack: HTMLElement, parent: HTMLElement) {
     let currentChild = parent.firstChild;
 
     // Removes all songs before selected song from queue
@@ -23,15 +30,41 @@ function skipToTrack(trackObject: Record<string, string>, childTrack: HTMLElemen
     window.parent.postMessage({ type: 'SKIP_TO_TRACK', payload: trackObject }, '*');
 }
 
-export async function addToQueue(trackObject: Record<string, string>, result: React.JSX.Element) {
-    const artist    = trackObject.artist;
-    const title     = trackObject.title;
-    const album     = trackObject.album;
-    const artwork   = trackObject.artwork;
-    const urn       = trackObject.urn;
-    const trackUrl  = trackObject.trackUrl;
-    const duration  = trackObject.duration;
 
+// Used to detect if user clicks proper area to either add or remove a song from a queue
+function notRemoving(target: HTMLElement) {
+    if (
+        target?.classList.contains('MuiPaper-root') ||
+        target?.classList.contains('MuiPaper-elevation') ||
+        target?.classList.contains('MuiPaper-rounded') ||
+        target?.classList.contains('MuiPaper-elevation1') ||
+        target?.classList.contains('trackMetadataParent') ||
+        target?.classList.contains('css-16carsw-MuiPaper-root') ||
+        target?.classList.contains('MuiGrid-root') ||
+        target?.classList.contains('MuiGrid-direction-xs-row') ||
+        target?.classList.contains('MuiGrid-grid-xs-10') ||
+        target?.classList.contains('css-r13beu-MuiGrid-root') ||
+        target?.classList.contains('MuiPaper-root') ||
+        target?.classList.contains('MuiPaper-elevation') ||
+        target?.classList.contains('MuiPaper-rounded') ||
+        target?.classList.contains('MuiPaper-elevation1') ||
+        target?.classList.contains('logoParent') ||
+        target?.classList.contains('css-esa9er-MuiPaper-root') ||
+        target?.classList.contains('MuiGrid-root') ||
+        target?.classList.contains('MuiGrid-direction-xs-row') ||
+        target?.classList.contains('MuiGrid-grid-xs-2') ||
+        target?.classList.contains('css-15bfe7d-MuiGrid-root') ||
+        target?.classList.contains('Platform') ||
+        target?.classList.contains('SoundCloud')
+    ) 
+    {
+        return true;
+    }
+    return false;
+}
+
+export async function addToQueue(trackObject: Record<string, string>) {
+    const result = generateResult("SoundCloud", trackObject, true);
     const parent  = document.getElementById("queueParent");
     
     let childrenCount;
@@ -45,9 +78,16 @@ export async function addToQueue(trackObject: Record<string, string>, result: Re
     childNode.id = `Queue Slot ${childrenCount}`;
 
     if (parent && childNode) {
-        childNode.onclick = () => {
-            skipToTrack(trackObject, childNode, parent);
-        }
+        // Sets clickable areas (left: skip to song from queue to be played) (right and specifically the remove button: removes a song from the queue)
+        childNode.addEventListener('click', (event: MouseEvent) => {
+            const target = event.target as HTMLElement;            
+            if (notRemoving(target)) {
+                skipToTrack(trackObject, childNode, parent);
+            }
+            else {
+                removeFromQueue(childNode, parent);
+            }
+        });
     }
 
     if (parent) {
@@ -65,6 +105,7 @@ interface QueueProps{
 export default function Queue({children}: QueueProps) {
     return(
         <div id='queueParent'>
+            <h1>Queue</h1>
             {children}
         </div>
     );
