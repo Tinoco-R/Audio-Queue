@@ -157,7 +157,18 @@ export default function MusicPlayerSlider() {
             min={0}
             step={1}
             max={duration}
-            onChange={(_, value) => setPosition(value)}
+            onChange={(_, value) => {
+                const audioElement = document.getElementById("audio") as HTMLAudioElement;
+                audioElement.currentTime = value;
+                setPosition(value);
+
+                // Song is over, play next song in queue
+                if(duration && value >= duration) {
+
+                }
+                }
+            }
+            
             sx={(t) => ({
                 color: 'rgba(0,0,0,0.87)',
                 height: 4,
