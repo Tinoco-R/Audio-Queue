@@ -102,10 +102,11 @@ export default function MusicPlayerSlider() {
 
     useEffect(() => {
         let intervalId: NodeJS.Timeout;
-        const audioELement = document.getElementById("audio") as HTMLAudioElement;
+        const audioElement = document.getElementById("audio") as HTMLAudioElement;
+        const volume = document.getElementById("volume");
 
         if (!paused) {
-            audioELement.play();
+            audioElement.play();
             intervalId = setInterval(() => {
                 setPosition((prevPosition) => {
                     let newPosition = prevPosition + 1;
@@ -120,7 +121,7 @@ export default function MusicPlayerSlider() {
             return () => clearInterval(intervalId);
         }
         else {
-            audioELement.pause();
+            audioElement.pause();
         }
     }, [paused]);
 
@@ -247,8 +248,15 @@ export default function MusicPlayerSlider() {
             >
             <VolumeDownRounded />
             <Slider
+                id="volume"
                 aria-label="Volume"
-                defaultValue={30}
+                defaultValue={100}
+                onChange={(_, value) => {
+                    const audioElement = document.getElementById("audio") as HTMLAudioElement;
+                    if (audioElement) {
+                        audioElement.volume = value / 100;
+                    }
+                }}
                 sx={(t) => ({
                 color: 'rgba(0,0,0,0.87)',
                 '& .MuiSlider-track': {
