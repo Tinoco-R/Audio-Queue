@@ -4,8 +4,8 @@ import fs from 'fs';
 import { readFile } from 'fs';
 
 // Write text to a file
-export async function writeToFile(data: any, name: string) {
-    let fileName = `src/api/platformAuthentications/data/${name}.json`;
+export async function writeToFile<T>(data: T, name: string) {
+    const fileName = `src/api/platformAuthentications/data/${name}.json`;
 
     try {
         fs.writeFile(fileName, JSON.stringify(data, null, 2), 'utf8', (err) => {
@@ -24,7 +24,7 @@ export async function writeToFile(data: any, name: string) {
 // Read from a file
 export async function readFromFile(name: string) {
     try {
-        let fileName = `src/api/platformAuthentications/data/${name}.json`;
+        const fileName = `src/api/platformAuthentications/data/${name}.json`;
         
         // Read JSON data from a file
         const data = await new Promise<string>((resolve, reject) => {
