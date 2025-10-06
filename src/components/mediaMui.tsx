@@ -64,7 +64,7 @@ export default function MusicPlayerSlider() {
     const [position, setPosition] = useState(0);
     const [paused, setPaused] = useState(true);
     const [video, setVideo] = useState(false);
-    let [iFrameSrc, setiFrameSrc] = useState("");
+    const [iFrameSrc, setiFrameSrc] = useState("");
 
     function formatDuration(value: number) {
         const minute = Math.floor(value / 60);
