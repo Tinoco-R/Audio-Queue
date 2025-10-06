@@ -13,7 +13,7 @@ function getNumberOfTracksInQueue(parent: HTMLElement):number {
 }
 
 // Removes all tracks before selected track in queue and plays track in media player
-export function skipToTrack(trackObject: Record<string, string>, childTrack: HTMLElement, parent: HTMLElement) {
+export function skipToTrack(trackObject: Record<string, string>, childTrack: HTMLElement, parent: HTMLElement, platform: string) {
     let currentChild = parent.firstChild;
 
     // Removes all songs before selected song from queue
@@ -27,7 +27,13 @@ export function skipToTrack(trackObject: Record<string, string>, childTrack: HTM
     if (currentChild) {
         parent.removeChild(currentChild);
     }
-    window.parent.postMessage({ type: 'SKIP_TO_TRACK', payload: trackObject }, '*');
+
+    const payload = {
+        type: 'SKIP_TO_TRACK',
+        trackObject,
+        platform
+    };
+    window.parent.postMessage(payload, '*');
 }
 
 
@@ -82,7 +88,7 @@ export async function addToQueue(trackObject: Record<string, string>, platform: 
         childNode.addEventListener('click', (event: MouseEvent) => {
             const target = event.target as HTMLElement;            
             if (notRemoving(target)) {
-                skipToTrack(trackObject, childNode, parent);
+                skipToTrack(trackObject, childNode, parent, platform);
             }
             else {
                 removeFromQueue(childNode, parent);

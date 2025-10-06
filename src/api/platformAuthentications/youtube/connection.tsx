@@ -112,8 +112,10 @@ async function callAuthorizationApi(body: string, header: string): Promise<strin
     return accessToken;
 }
 
-function convertISO_8601ToSeconds() {
-
+function getIframeSrc(iframe: string) {
+    const regex = /src="([^"]+)"/;
+    const match = iframe.match(regex);
+    return match ? 'https://' + match[1] : null;
 }
 
 export async function getTracks(query: string, limit: number, developing: boolean = false): Promise<Record<string, string>[]> {
@@ -131,7 +133,7 @@ export async function getTracks(query: string, limit: number, developing: boolea
     url += "&type=video";
     url += `&maxResults=${limit}`;
     url += "&videoDuration=medium";
-    url += "&videoSyndicated=true"; //The videoSyndicated parameter lets you to restrict a search to only videos that can be played outside youtube.com. If you specify a value for this parameter, you must also set the type parameter's value to video.
+    url += "&videoEmbeddable=true";
 
     const tracksData = [];
 
@@ -161,7 +163,7 @@ export async function getTracks(query: string, limit: number, developing: boolea
 
         // Get wanted metadata from video resource (embedable player and duration)
         const videoResource = developing ? await readFromFile(`video ${i}`) : await getVideo(item.id.videoId, i);
-        const player = videoResource.items[0].player.embedHtml;
+        const player = getIframeSrc(videoResource.items[0].player.embedHtml);
         // YouTube provides duration in the form of ISO 8601. This converts it to seconds and sets final value as a string
         const durationTime = Duration.fromISO(videoResource.items[0].contentDetails.duration).as('seconds').toString();
         
@@ -173,13 +175,11 @@ export async function getTracks(query: string, limit: number, developing: boolea
             artwork: item.snippet.thumbnails, // object having "default", "medium", "high" objects with .url / .width / .height
             trackUrl: "",
             duration: durationTime,
-            player: player,
+            player: player ?? "",
         }
         
         tracksData.push(trackObject);
     }
-    
-    console.log("Tracks Data:", tracksData);
     return tracksData;
 }
 

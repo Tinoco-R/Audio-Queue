@@ -56,11 +56,15 @@ interface TrackObject {
   urn?: string;
   trackUrl?: string;
   duration?: number;
+  id?: string;
+  player?: HTMLElement;
 }
 
 export default function MusicPlayerSlider() {
     const [position, setPosition] = useState(0);
     const [paused, setPaused] = useState(true);
+    const [video, setVideo] = useState(false);
+    let [iFrameSrc, setiFrameSrc] = useState("");
 
     function formatDuration(value: number) {
         const minute = Math.floor(value / 60);
@@ -69,7 +73,7 @@ export default function MusicPlayerSlider() {
     }
 
     const [trackObject, setTrackObject] = useState<TrackObject>();
-    const { artist, title, album, artwork, urn, trackUrl, duration } = trackObject || {
+    const { artist, title, album, artwork, urn, trackUrl, duration, id } = trackObject || {
         artist: "Artist / Band",
         title: "Title of Track",
         album: "Long Album Name",
@@ -77,11 +81,14 @@ export default function MusicPlayerSlider() {
         urn: "",
         trackUrl: "null",
         duration: 200,
+        id: "",
     };
 
     useEffect(() => {        
         const listener = (event: MessageEvent) => {
             if (event.data.type === 'SKIP_TO_TRACK') {
+                console.log("A");
+                const { trackObject, platform } = event.data;
                 const togglePlay = document.getElementById("togglePlay");
                 const play = togglePlay?.className.includes("Play");
                 
@@ -91,21 +98,59 @@ export default function MusicPlayerSlider() {
                 
                 setTimeout(() => {
                     setPosition(0);
-                    setTrackObject(event.data.payload);
+                    setTrackObject(trackObject);
                     setPaused(false);
                 }, 1);
+
+                // If YouTube is the platform, we need to load in its video player
+                if(platform == "YouTube") {
+                    setiFrameSrc(trackObject.player);
+                    setVideo(true);
+                    setPaused(true);
+                }
+                else {
+                    setiFrameSrc("");
+                    setVideo(false);
+                }
             }
         };
         window.addEventListener('message', listener);
         return () => window.removeEventListener('message', listener);
     }, []);
 
+    // Loads in embeddable player for youtube videos (iframe)
     useEffect(() => {
+        console.log("B");
+        if (video) {
+            // Embeds player (code via Youtube IFrame Player API)
+            var tag = document.createElement('script');
+            tag.id = 'iframe-demo';
+            tag.src = "https://www.youtube.com/iframe_api";
+            
+            var firstScriptTag = document.getElementsByTagName('script')[0];
+            if (firstScriptTag?.parentNode) {
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            }
+            
+            var player: YT.Player;
+            function onYouTubeIframeAPIReady() {
+                player = new YT.Player('ytIframe', {});
+            }
+        }
+
+    }, []);
+
+    useEffect(() => {
+        console.log("C");
         let intervalId: NodeJS.Timeout;
         const audioElement = document.getElementById("audio") as HTMLAudioElement;
         const volume = document.getElementById("volume");
 
-        if (!paused) {
+        console.log("!paused", !paused);
+        console.log("audioElement", audioElement);
+        
+        if (!paused && audioElement) {
+            console.log("in loop");
             audioElement.play();
             intervalId = setInterval(() => {
                 setPosition((prevPosition) => {
@@ -121,13 +166,21 @@ export default function MusicPlayerSlider() {
             return () => clearInterval(intervalId);
         }
         else {
-            audioElement.pause();
+            if (audioElement) {
+                audioElement.pause();
+            }
         }
     }, [paused]);
 
     return (
         <Box sx={{ width: '100%', overflow: 'hidden', position: 'relative', p: 3 }}>
-        <Widget>
+        {video ? 
+        (<iframe id="ytIframe"
+            width="640" height="360"
+            src={iFrameSrc}
+            style={{ border: 'solid 4px #37474F' }}
+        ></iframe>) : 
+        (<Widget className='widgetClass'>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <CoverImage>
                 <img
@@ -166,8 +219,7 @@ export default function MusicPlayerSlider() {
                 if(duration && value >= duration) {
 
                 }
-                }
-            }
+            }}
             
             sx={(t) => ({
                 color: 'rgba(0,0,0,0.87)',
@@ -291,8 +343,9 @@ export default function MusicPlayerSlider() {
             />
             <VolumeUpRounded />
             </Stack>
-        </Widget>
-        <audio id='audio' src={trackUrl}></audio>
+        </Widget>)}
+        {video ? null : (trackUrl !== null && trackUrl !== "") && (<audio id='audio' src={trackUrl}></audio>) }
+        
         </Box>
     );
 }
