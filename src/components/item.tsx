@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: '#fff',
+  backgroundColor: '#6c6060ff',
   ...theme.typography.body2,
   padding: theme.spacing(1),
   textAlign: 'center',

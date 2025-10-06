@@ -3,9 +3,22 @@ const client_id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
 const client_secret = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET;
 
 const redirectURI = "https://www.audioqueue.dev/linkPlatforms/spotify";
+const redirectURILocalHost = "http://127.0.0.1:3000/linkPlatforms/spotify";
 const tokenURL  = "https://accounts.spotify.com/api/token";
 const authURL   = "https://accounts.spotify.com/authorize";
 const searchURL = "https://api.spotify.com/v1/search";
+
+function isLocalhost() {
+    const hostname = window.location.hostname;
+    return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]";
+}
+
+const getRedirectURI = () => {
+    if (isLocalhost()) {
+        return redirectURILocalHost;
+    }
+    return redirectURI;
+};
 
 function getAuthHeader() {
     return btoa(client_id + ":" + client_secret);
@@ -21,7 +34,7 @@ function requestSpotifyAuthorization() {
 
     url += "?client_id=" + client_id;
     url += "&response_type=code";
-    url += "&redirect_uri=" + encodeURI(redirectURI);
+    url += "&redirect_uri=" + encodeURI(getRedirectURI());
     url += "&show_dialog=true";
     url += "&scope=app-remote-control streaming user-read-private user-read-email user-modify-playback-state user-library-read user-read-playback-state";
     window.location.href = url;
@@ -45,7 +58,7 @@ async function fetchAccessToken(code: string | null): Promise<string | null> {
     let accessToken = null;
     let body = "grant_type=authorization_code";
     body += "&code=" + code;
-    body += "&redirect_uri=" + encodeURI(redirectURI);
+    body += "&redirect_uri=" + encodeURI(getRedirectURI());
     
     const authHeader = getAuthHeader();
 
@@ -128,4 +141,8 @@ async function searchSpotify(accessToken: string | null) {
     const data = await response.json();
 
     console.log(data);
+}
+
+export async function getTracks(query: string): Promise<Record<string, string>[]> {
+    return [];
 }

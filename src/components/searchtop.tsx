@@ -1,6 +1,9 @@
 'use client';
 import React, { useState } from 'react';
 import { SelectablePlatforms } from "./linkedAccounts";
+import { getTracks as getTracksSpotify } from '@/api/platformAuthentications/spotify/connection';
+import { getTracks as getTracksYoutube } from '@/api/platformAuthentications/youtube/connection';
+import { getTracks as getTracksAppleMusic } from '@/api/platformAuthentications/apple/connection';
 import { getTracks as getTracksSoundcloud } from '@/api/platformAuthentications/soundcloud/connection';
 import generateResult from './searchResults';
 import { createRoot, Container  } from 'react-dom/client';
@@ -20,37 +23,29 @@ export default function SearchTop({children}: SearchTopProps) {
         const platforms = Array.from(document.querySelectorAll('[class*="Active"]')).map(el => el.className);
 
         platforms.forEach(platform => {
-            const platformName = platform.replace(/Active$/, '').trim();
+            const platformName = platform.replace(/Active$/, '').trim().replace("Platform ", '');
             selected.push(platformName);
         });
 
         return selected;
     }
 
-    // Searches for song using available platforms
-    async function searchFunction() {
-        // Gets all selected platforms
-        const selected = getSelectedPlatforms();
-
-        // Begins looking for the song until found on any linked platform
-        const tracks = await getTracksSoundcloud(inputValue.toString())
-        
-        // Needs: Album Name (soundcloud)
-        
+    // Renders tracks for the client
+    async function renderTracks(platform: string, tracks: Record<string, string>[]) {
         // Generate Search Results
-        const parent  = document.getElementById("searchResultsParent");
+        const parent  = document.getElementById(`searchResultsParent${platform}`);
 
         // Render search results
         for (let i = 0; i < tracks.length; i++) {
             const track = tracks[i];
-            const result = generateResult("SoundCloud", track);
+            const result = generateResult(platform, track);
 
             // Creates a child node to render result onto
             const childNode = await document.createElement('div');
-            childNode.id = `SearchResult${i}`;
+            childNode.id = `${platform}SearchResult${i}`;
             if (childNode) {
                 childNode.onclick = () => {
-                    addToQueue(track);
+                    addToQueue(track, platform);
                 }
             }
 
@@ -58,9 +53,37 @@ export default function SearchTop({children}: SearchTopProps) {
                 parent.appendChild(childNode);
             }
 
-            const child = createRoot(document.getElementById(`SearchResult${i}`) as Container);
+            const child = createRoot(document.getElementById(`${platform}SearchResult${i}`) as Container);
             child.render(result);
         }
+    }
+
+    // Gets tracks via respective APIs and calls render function
+    async function searchSelected(selected: string[]) {
+        const searchResultsLimit = 3;
+        if(selected.includes("Spotify")) {
+            const tracks = await getTracksSpotify(inputValue.toString());
+            //renderTracks("Spotify", tracks);
+        }
+        if(selected.includes("YouTube")) {
+            const tracks = await getTracksYoutube(inputValue.toString(), searchResultsLimit);
+            renderTracks("YouTube", tracks);
+        }
+        if(selected.includes("Apple Music")) {
+            const tracks = await getTracksAppleMusic(inputValue.toString());
+            //renderTracks("Apple Music", tracks);
+        }
+        if(selected.includes("SoundCloud")) {
+            const tracks = await getTracksSoundcloud(inputValue.toString(), searchResultsLimit);
+            renderTracks("SoundCloud", tracks);
+        }
+    }
+
+    // Searches for song using available platforms
+    async function searchFunction() {
+        // Gets all selected platforms
+        const selected = getSelectedPlatforms();
+        searchSelected(selected);
     };
 
     // Udpates inputValue as the user continues typing
@@ -98,6 +121,10 @@ interface SearchResultsProps{
 export function SearchResults({children}: SearchResultsProps) {
     return(
         <div id='searchResultsParent'>
+            <div id='searchResultsParentSpotify'></div>
+            <div id='searchResultsParentYouTube'></div>
+            <div id='searchResultsParentApple Music'></div>
+            <div id='searchResultsParentSoundCloud'></div>
             <h1>Search Results</h1>
                 {children}
         </div>

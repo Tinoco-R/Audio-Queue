@@ -112,7 +112,7 @@ async function callAuthorizationApi(body: string, header: string): Promise<strin
     return accessToken;
 }
 
-export async function getTracks(query: string): Promise<Record<string, string>[]> {
+export async function getTracks(query: string, limit: number): Promise<Record<string, string>[]> {
     const accessToken = localStorage.getItem("access_token_soundcloud");
 
     if (!accessToken) {
@@ -124,7 +124,7 @@ export async function getTracks(query: string): Promise<Record<string, string>[]
 
     url += "?q=" + encodeURIComponent(query);
     url += "&access=playable";
-    url += "&limit=5";
+    url += `&limit=${limit + 1}`;
 
     const response = await fetch(url, {
         method: "GET",

@@ -63,8 +63,8 @@ function notRemoving(target: HTMLElement) {
     return false;
 }
 
-export async function addToQueue(trackObject: Record<string, string>) {
-    const result = generateResult("SoundCloud", trackObject, true);
+export async function addToQueue(trackObject: Record<string, string>, platform: string) {
+    const result = generateResult(platform, trackObject, true);
     const parent  = document.getElementById("queueParent");
     
     let childrenCount;
