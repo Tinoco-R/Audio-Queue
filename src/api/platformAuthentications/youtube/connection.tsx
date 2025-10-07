@@ -152,11 +152,11 @@ export async function getTracks(query: string, limit: number, developing: boolea
 
     // If developing, pull data from saved files (DEVELOPMENT ONLY), else make API calls to YT
     // Purpose: saves YouTube API quota from being wasted while developing
-    const data = developing ? await readFromFile("data") : await response.json();
-    const dataItems = developing ? await readFromFile("items") : await data.items;
+    const data = developing ? await readFromFile("dataYT") : await response.json();
+    const dataItems = developing ? await readFromFile("itemsYT") : await data.items;
 
     // Store data in a file (DEVELOPMENT ONLY)
-    developing ? {} : writeToFile(data, "data"), writeToFile(dataItems, "items");
+    developing ? {} : writeToFile(data, "dataYT"), writeToFile(dataItems, "itemsYT");
 
     for (let i = 0; i < dataItems.length; i++) {
         const item = dataItems[i];

@@ -58,12 +58,14 @@ interface TrackObject {
   duration?: number;
   id?: string;
   player?: HTMLElement;
+  uri?: string;
 }
 
 export default function MusicPlayerSlider() {
     const [position, setPosition] = useState(0);
     const [paused, setPaused] = useState(true);
     const [video, setVideo] = useState(false);
+    const [spotifyEmbed, setSpotifyEmbed] = useState(false);
     const [iFrameSrc, setiFrameSrc] = useState("");
 
     function formatDuration(value: number) {
@@ -93,13 +95,18 @@ export default function MusicPlayerSlider() {
                 if(platform == "YouTube") {
                     setiFrameSrc(trackObject.player + "?autoplay=1");
                     setVideo(true);
-                    setPaused(true);
+                }
+                else if(platform == "Spotify") {
+                    setiFrameSrc("");
+                    setVideo(false);
+                    setSpotifyEmbed(true);
                 }
                 else {
                     setiFrameSrc("");
                     setVideo(false);
-                    setPaused(true);
+                    setSpotifyEmbed(false);
                 }
+                setPaused(true);
 
                 const togglePlay = document.getElementById("togglePlay");
                 const play = togglePlay?.className.includes("Play");
@@ -118,13 +125,6 @@ export default function MusicPlayerSlider() {
         window.addEventListener('message', listener);
         return () => window.removeEventListener('message', listener);
     }, []);
-
-    // Loads in embeddable player for youtube videos (iframe)
-    useEffect(() => {
-        if (video) {
-            const ytIframe = document.getElementById("ytIframe");
-        }
-    }, [video]);
 
     useEffect(() => {
         let intervalId: NodeJS.Timeout;
@@ -155,7 +155,8 @@ export default function MusicPlayerSlider() {
     return (
         <Box id="boxIdMain" sx={{ overflow: 'auto', p: 3 }}>
         {video ? 
-        (<iframe allow="autoplay *" id="ytIframe" width="640" height="360" src={iFrameSrc} style={{ border: 'solid 4px #37474F' }}></iframe>) : 
+        (<iframe allow="autoplay *" id="youtubeIframe" width="640" height="360" src={iFrameSrc} style={{ border: 'solid 4px #37474F' }}></iframe>) : 
+        spotifyEmbed ? (<iframe data-testid="embed-iframe" id='spotifyIframe' frameBorder={0} allowFullScreen allow="autoplay *; clipboard-write; encrypted-media; fullscreen; picture-in-picture" src={trackUrl} style={{borderRadius: "12px", width: "100%", height: "352" }} loading="lazy"></iframe>) : 
         (<Widget className='widgetClass'>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <CoverImage> <img alt="" src={artwork}/></CoverImage>

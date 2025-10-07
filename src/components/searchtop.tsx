@@ -77,8 +77,8 @@ export default function SearchTop({children}: SearchTopProps) {
         const searchResultsLimit = 3;
         
         if(selected.includes("Spotify")) {
-            const tracks = await getTracksSpotify(inputValue.toString());
-            //renderTracks("Spotify", tracks);
+            const tracks = await getTracksSpotify(inputValue.toString(), searchResultsLimit, isDeveloping);
+            renderTracks("Spotify", tracks);
         }
         if(selected.includes("YouTube")) {
             const tracks = await getTracksYoutube(inputValue.toString(), searchResultsLimit, isDeveloping);

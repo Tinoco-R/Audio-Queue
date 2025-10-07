@@ -1,3 +1,5 @@
+import { readFromFile, writeToFile } from "../youtube/fileHandling";
+
 // Spotify creating and sending an authorization request
 const client_id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
 const client_secret = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET;
@@ -121,28 +123,63 @@ async function getProfile(accessToken: string | null) {
     console.log(data);
 }
 
-async function searchSpotify(accessToken: string | null) {
-    accessToken = localStorage.getItem("access_token_spotify");
-    const query = "q=Glass Heart";
-    const type = "track";
-    const include_external = "audio";
+export async function getTracks(query: string, limit: number, developing: boolean = false): Promise<Record<string, string>[]> {
+    const accessToken = localStorage.getItem("access_token_spotify");
+    
+    if (!accessToken) {
+        console.error('No access token found');
+        return [];
+    }
 
     let url = searchURL;
     url += "?q=" + encodeURIComponent(query);
-    url += "&type=" + encodeURIComponent(type);
-    url += "&include_external=" + include_external;
+    url += "&type=track";
+    url += "&include_external=audio";
+    url += "&limit=" + encodeURIComponent(limit);;
 
     const response = await fetch(url, {
         headers: {
             Authorization: "Bearer " + accessToken,
+            "Accept": "application/json; charset=utf-8",
         },
     });
 
-    const data = await response.json();
+    // If developing, pull data from saved files (DEVELOPMENT ONLY), else make API calls to YT
+    // Purpose: saves YouTube API quota from being wasted while developing
+    const data = developing ? await readFromFile("dataSpotify") : await response.json();
+    const dataItems = developing ? await readFromFile("itemsSpotify") : await data.tracks.items;
 
-    console.log(data);
-}
+    // Store data in a file (DEVELOPMENT ONLY)
+    developing ? {} : writeToFile(data, "dataSpotify"), writeToFile(dataItems, "itemsSpotify");
+    
+    const tracksData = [];
+    for (let i = 0; i < dataItems.length; i++) {
+        const item = dataItems[i];
 
-export async function getTracks(query: string): Promise<Record<string, string>[]> {
-    return [];
+        // Get artists names
+        const artists = item.artists;
+        let artistNames = "";
+        for (let i = 0; i < artists.length; i++) {
+            if(i > 0) {
+                artistNames += ", ";
+            }
+            const artistName = artists[i].name;
+            artistNames += artistName;
+        }
+        
+        const trackObject: Record<string, string> = {
+            id: item.id,
+            artist: artistNames,
+            title: item.name,
+            album: item.album.name,
+            artwork: item.album.images[0].url, // 3 options (biggest -> smallest) height / width / url
+            //trackUrl: item.uri,
+            //trackUrl: item.external_urls.spotify,
+            trackUrl: `https://open.spotify.com/embed/track/${item.id}?utm_source=generator`,
+            uri: item.uri,
+            duration: Math.floor(item.duration_ms / 1000).toString(),
+        }
+        tracksData.push(trackObject);
+    }
+    return tracksData;
 }
