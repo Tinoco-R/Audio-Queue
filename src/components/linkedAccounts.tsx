@@ -4,10 +4,6 @@ import Platform from "./platform";
 
 // Returns platforms that the search will be able to use per user platform authorizations
 function getLinkedPlatforms(returnDisabled = false) {
-    if (typeof window === 'undefined') {
-        return [false, false, false, false];
-    }
-
     const keys = ["access_token_spotify", "access_token_youtube", "access_token_apple_music", "access_token_soundcloud"];
     const linked = [];
 
