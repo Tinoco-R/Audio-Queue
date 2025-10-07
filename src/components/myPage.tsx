@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 
 export default function MyPage() {
     const router = useRouter()
-    const [isOn, setIsOn] = useState(false);
+    const [isOn, setIsOn] = useState(true);
 
     const developState = `${isOn ? "On" : "Off"}`;
     const handleDevelopClick = () => {

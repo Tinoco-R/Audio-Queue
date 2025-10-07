@@ -87,11 +87,23 @@ export default function MusicPlayerSlider() {
     useEffect(() => {        
         const listener = (event: MessageEvent) => {
             if (event.data.type === 'SKIP_TO_TRACK') {
-                console.log("A");
                 const { trackObject, platform } = event.data;
+
+                // If YouTube is the platform, we need to load in its video player
+                if(platform == "YouTube") {
+                    setiFrameSrc(trackObject.player + "?autoplay=1");
+                    setVideo(true);
+                    setPaused(true);
+                }
+                else {
+                    setiFrameSrc("");
+                    setVideo(false);
+                    setPaused(true);
+                }
+
                 const togglePlay = document.getElementById("togglePlay");
                 const play = togglePlay?.className.includes("Play");
-                
+
                 if (play) {
                     togglePlay?.click();
                 }
@@ -101,17 +113,6 @@ export default function MusicPlayerSlider() {
                     setTrackObject(trackObject);
                     setPaused(false);
                 }, 1);
-
-                // If YouTube is the platform, we need to load in its video player
-                if(platform == "YouTube") {
-                    setiFrameSrc(trackObject.player);
-                    setVideo(true);
-                    setPaused(true);
-                }
-                else {
-                    setiFrameSrc("");
-                    setVideo(false);
-                }
             }
         };
         window.addEventListener('message', listener);
@@ -120,37 +121,16 @@ export default function MusicPlayerSlider() {
 
     // Loads in embeddable player for youtube videos (iframe)
     useEffect(() => {
-        console.log("B");
         if (video) {
-            // Embeds player (code via Youtube IFrame Player API)
-            var tag = document.createElement('script');
-            tag.id = 'iframe-demo';
-            tag.src = "https://www.youtube.com/iframe_api";
-            
-            var firstScriptTag = document.getElementsByTagName('script')[0];
-            if (firstScriptTag?.parentNode) {
-                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-            }
-            
-            var player: YT.Player;
-            function onYouTubeIframeAPIReady() {
-                player = new YT.Player('ytIframe', {});
-            }
+            const ytIframe = document.getElementById("ytIframe");
         }
-
-    }, []);
+    }, [video]);
 
     useEffect(() => {
-        console.log("C");
         let intervalId: NodeJS.Timeout;
         const audioElement = document.getElementById("audio") as HTMLAudioElement;
-        const volume = document.getElementById("volume");
-
-        console.log("!paused", !paused);
-        console.log("audioElement", audioElement);
         
         if (!paused && audioElement) {
-            console.log("in loop");
             audioElement.play();
             intervalId = setInterval(() => {
                 setPosition((prevPosition) => {
@@ -173,43 +153,19 @@ export default function MusicPlayerSlider() {
     }, [paused]);
 
     return (
-        <Box sx={{ width: '100%', overflow: 'hidden', position: 'relative', p: 3 }}>
+        <Box id="boxIdMain" sx={{ overflow: 'auto', p: 3 }}>
         {video ? 
-        (<iframe id="ytIframe"
-            width="640" height="360"
-            src={iFrameSrc}
-            style={{ border: 'solid 4px #37474F' }}
-        ></iframe>) : 
+        (<iframe allow="autoplay *" id="ytIframe" width="640" height="360" src={iFrameSrc} style={{ border: 'solid 4px #37474F' }}></iframe>) : 
         (<Widget className='widgetClass'>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <CoverImage>
-                <img
-                alt=""
-                src={artwork}
-                />
-            </CoverImage>
-            <Box sx={{ ml: 1.5, minWidth: 0 }}>
-                <Typography
-                variant="caption"
-                sx={{ color: 'text.secondary', fontWeight: 500 }}
-                >
-                {artist}
-                </Typography>
-                <Typography noWrap>
-                <b>{title}</b>
-                </Typography>
-                <Typography noWrap sx={{ letterSpacing: -0.25 }}>
-                {album}
-                </Typography>
+                <CoverImage> <img alt="" src={artwork}/></CoverImage>
+                <Box sx={{ ml: 1.5, minWidth: 0 }}>
+                    <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 500 }}>{artist}</Typography>
+                    <Typography noWrap> <b>{title}</b> </Typography>
+                    <Typography noWrap sx={{ letterSpacing: -0.25 }}>{album}</Typography>
+                </Box>
             </Box>
-            </Box>
-            <Slider
-            aria-label="time-indicator"
-            size="small"
-            value={position}
-            min={0}
-            step={1}
-            max={duration}
+            <Slider aria-label="time-indicator" size="small" value={position} min={0} step={1} max={duration} 
             onChange={(_, value) => {
                 const audioElement = document.getElementById("audio") as HTMLAudioElement;
                 audioElement.currentTime = value;
@@ -250,49 +206,35 @@ export default function MusicPlayerSlider() {
                 }),
             })}
             />
-            <Box
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                mt: -2,
-            }}
-            >
-            <TinyText>{formatDuration(position)}</TinyText>
-            <TinyText>-{formatDuration(duration !== undefined ? duration - position : 0)}</TinyText>
+            <Box sx={{ display: 'flex', alignItems: 'center',justifyContent: 'space-between', mt: -2, }}>
+                <TinyText>{formatDuration(position)}</TinyText>
+                <TinyText>-{formatDuration(duration !== undefined ? duration - position : 0)}</TinyText>
             </Box>
             <Box
-            sx={(theme) => ({
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                mt: -1,
-                '& svg': {
-                color: '#000',
-                ...theme.applyStyles('dark', {
-                    color: '#fff',
-                }),
-                },
-            })}
-            >
-            <IconButton aria-label="previous song">
-                <FastRewindRounded fontSize="large" />
-            </IconButton>
-            <IconButton
-                aria-label={paused ? 'play' : 'pause'}
-                onClick={() => setPaused(!paused)}
-                id='togglePlay'
-                className={paused ? "Pause" : "Play"}
-            >
-                {paused ? (
-                <PlayArrowRounded sx={{ fontSize: '3rem' }} />
-                ) : (
-                <PauseRounded sx={{ fontSize: '3rem' }} />
-                )}
-            </IconButton>
-            <IconButton aria-label="next song">
-                <FastForwardRounded fontSize="large" />
-            </IconButton>
+                sx={(theme) => ({
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    mt: -1,
+                    '& svg': {
+                    color: '#000',
+                    ...theme.applyStyles('dark', {
+                        color: '#fff',
+                    }),
+                    },
+                })}
+                >
+                <IconButton aria-label="previous song">
+                    <FastRewindRounded fontSize="large" />
+                </IconButton>
+
+                <IconButton aria-label={paused ? 'play' : 'pause'} onClick={() => setPaused(!paused)} id='togglePlay' className={paused ? "Pause" : "Play"}>
+                    {paused ? (<PlayArrowRounded sx={{ fontSize: '3rem' }} />) : (<PauseRounded sx={{ fontSize: '3rem' }} />)}
+                </IconButton>
+
+                <IconButton aria-label="next song">
+                    <FastForwardRounded fontSize="large" />
+                </IconButton>
             </Box>
             <Stack
             spacing={2}

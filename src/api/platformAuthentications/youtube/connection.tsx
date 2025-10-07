@@ -164,6 +164,7 @@ export async function getTracks(query: string, limit: number, developing: boolea
         // Get wanted metadata from video resource (embedable player and duration)
         const videoResource = developing ? await readFromFile(`video ${i}`) : await getVideo(item.id.videoId, i);
         const player = getIframeSrc(videoResource.items[0].player.embedHtml);
+
         // YouTube provides duration in the form of ISO 8601. This converts it to seconds and sets final value as a string
         const durationTime = Duration.fromISO(videoResource.items[0].contentDetails.duration).as('seconds').toString();
         
