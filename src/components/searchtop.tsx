@@ -60,13 +60,15 @@ export default function SearchTop({children}: SearchTopProps) {
 
     // Gets tracks via respective APIs and calls render function
     async function searchSelected(selected: string[]) {
+        const isDeveloping = document.getElementById("developing")?.className === "On" ? true : false;
         const searchResultsLimit = 3;
+        
         if(selected.includes("Spotify")) {
             const tracks = await getTracksSpotify(inputValue.toString());
             //renderTracks("Spotify", tracks);
         }
         if(selected.includes("YouTube")) {
-            const tracks = await getTracksYoutube(inputValue.toString(), searchResultsLimit);
+            const tracks = await getTracksYoutube(inputValue.toString(), searchResultsLimit, isDeveloping);
             renderTracks("YouTube", tracks);
         }
         if(selected.includes("Apple Music")) {
