@@ -1,6 +1,12 @@
 'use client';
 import React from "react";
 import Platform from "./platform";
+import dynamic from 'next/dynamic'
+ 
+const SelectablePlatformsNoSSR = dynamic(
+  () => Promise.resolve(SelectablePlatforms),
+  { ssr: false }
+);
 
 // Returns platforms that the search will be able to use per user platform authorizations
 function getLinkedPlatforms(returnDisabled = false) {
@@ -88,5 +94,5 @@ function SelectablePlatforms() {
     )
 }
 
-export { LinkablePlatforms, LinkablePlatformsSkeleton, SelectablePlatforms };
+export { LinkablePlatforms, LinkablePlatformsSkeleton, SelectablePlatformsNoSSR };
 export default LinkablePlatforms;

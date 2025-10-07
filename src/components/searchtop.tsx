@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { SelectablePlatforms } from "./linkedAccounts";
+import { SelectablePlatformsNoSSR } from "./linkedAccounts";
 import { getTracks as getTracksSpotify } from '@/api/platformAuthentications/spotify/connection';
 import { getTracks as getTracksYoutube } from '@/api/platformAuthentications/youtube/connection';
 import { getTracks as getTracksAppleMusic } from '@/api/platformAuthentications/apple/connection';
@@ -122,7 +122,7 @@ export default function SearchTop({children}: SearchTopProps) {
         <div>
             <div id="topSearch" style={{display: "flex", flexWrap: "nowrap", justifyContent: "space-between"}}>
                 <div style={{fontSize: 50, color: "black"}}>Search</div>
-                <div><SelectablePlatforms></SelectablePlatforms></div>
+                <div><SelectablePlatformsNoSSR></SelectablePlatformsNoSSR></div>
             </div>
 
             <div id="searchBar">
