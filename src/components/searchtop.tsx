@@ -30,6 +30,19 @@ export default function SearchTop({children}: SearchTopProps) {
         return selected;
     }
 
+    // Removes previous search results to make room for a new search
+    function clearSearchResults() {
+        const searchResultsParent = document.getElementById("searchResultsParent") as HTMLElement;
+
+        const children = searchResultsParent.children;
+        for (let i = 0; i < children.length; i++) {
+            const child = children[i];
+            while (child.firstChild) {
+                child.removeChild(child.firstChild);
+            }
+        }
+    }
+
     // Renders tracks for the client
     async function renderTracks(platform: string, tracks: Record<string, string>[]) {
         // Generate Search Results
@@ -83,7 +96,10 @@ export default function SearchTop({children}: SearchTopProps) {
 
     // Searches for song using available platforms
     async function searchFunction() {
-        // Gets all selected platforms
+        // Clears previous search
+        clearSearchResults();
+
+        // Gets all selected platforms and performs searches
         const selected = getSelectedPlatforms();
         searchSelected(selected);
     };
