@@ -104,9 +104,33 @@ export default function SearchTop({children}: SearchTopProps) {
         searchSelected(selected);
     };
 
+    function sanitizeInput(input: string): string {
+        // Remove any non-alphanumeric characters
+        const sanitized = input.replace(/[^a-zA-Z0-9\s]/g, '');
+        
+        // Convert special characters to HTML entities
+        return sanitized.replace(/[<>&'"]/g, (char) => {
+            switch (char) {
+                case '<':
+                    return '&lt;';
+                case '>':
+                    return '&gt;';
+                case '&':
+                    return '&amp;';
+                case "'":
+                    return '&#39;';
+                case '"':
+                    return '&quot;';
+                default:
+                    return char;
+            }
+        });
+    }
+
     // Udpates inputValue as the user continues typing
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInputValue(e.target.value);
+        const sanitizedValue = sanitizeInput(e.target.value);
+        setInputValue(sanitizedValue);
     };
     
     // If user presses "Enter", triggers searchFunction
@@ -114,6 +138,8 @@ export default function SearchTop({children}: SearchTopProps) {
         if (e.key === 'Enter') {
             e.preventDefault();
             setIsEnterPressed(true);
+            const sanitizedInput = sanitizeInput(inputValue.toString());
+            setInputValue(sanitizedInput);
             searchFunction();
         }
     };
@@ -126,7 +152,7 @@ export default function SearchTop({children}: SearchTopProps) {
             </div>
 
             <div id="searchBar">
-                <input type="search" value={inputValue} onChange={handleChange} onKeyDown={handleKeyDown} style={{width: "100%", height: 40, background: "gray", borderRadius: "20px", fontSize: "25px"}}></input>
+                <input id='searchInput' type="search" maxLength={50} value={inputValue} onChange={handleChange} onKeyDown={handleKeyDown} style={{width: "100%", height: 40, background: "gray", borderRadius: "20px", fontSize: "25px"}}></input>
             </div>
             {children}
         </div>

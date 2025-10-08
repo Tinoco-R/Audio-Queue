@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import MyPage from "@/components/myPage";
 import "./globals.css";
 
-const _metadata: Metadata = {
+const metadata: Metadata = {
     title: "Audio Queue",
     description: "Generalized cooperative music queue",
 };

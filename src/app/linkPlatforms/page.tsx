@@ -1,10 +1,10 @@
 'use client'
-import LinkablePlatforms from "@/components/linkedAccounts"
+import LinkablePlatformsNoSSR from "@/components/linkedAccounts"
 
 export default function LinkPlatforms() {
     return(
         <div>            
-            <LinkablePlatforms></LinkablePlatforms>
+            <LinkablePlatformsNoSSR></LinkablePlatformsNoSSR>
         </div>
     )
 }

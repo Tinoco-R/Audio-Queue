@@ -1,6 +1,6 @@
-'use client'
 import { generateCodeVerifier, createCodeChallenge, setValueIfNotExists } from "./codeChallenge";
 import { readFromFile, writeToFile } from "../youtube/fileHandling";
+import { getToken } from "../cookies";
 
 // Soundcloud creating and sending an authorization request
 const client_id = process.env.NEXT_PUBLIC_SOUNDCLOUD_CLIENT;
@@ -101,19 +101,23 @@ async function callAuthorizationApi(body: string, header: string): Promise<strin
     const data = await response.json();
 
     if (data.access_token != undefined) {
+        const cookieName = "access_token_soundcloud";
         accessToken = data.access_token;
-        localStorage.setItem("access_token_soundcloud", accessToken);
+
+        document.cookie = `${cookieName}=${accessToken}; Path=/; Secure; SameSite=Lax; Max-Age=3600`;
     }
     if (data.refresh_token != undefined) {
+        const cookieName = "refresh_token_soundcloud";
         const refreshToken = data.refresh_token;
-        localStorage.setItem("refresh_token_soundcloud", refreshToken);
+
+        document.cookie = `${cookieName}=${refreshToken}; Path=/; Secure; SameSite=Lax; Max-Age=3600`;
     }
 
     return accessToken;
 }
 
 export async function getTracks(query: string, limit: number, developing: boolean = false): Promise<Record<string, string>[]> {
-    const accessToken = localStorage.getItem("access_token_soundcloud");
+    const accessToken = await getToken("access_token_soundcloud");
 
     if (!accessToken) {
         console.error('No access token found');
@@ -171,7 +175,7 @@ export async function getTracks(query: string, limit: number, developing: boolea
 }
 
 export async function getStreamableUrl(urn: string): Promise<string> {
-    const accessToken = localStorage.getItem("access_token_soundcloud");
+    const accessToken = await getToken("access_token_soundcloud");
 
     if (!accessToken) {
         console.error('No access token found');

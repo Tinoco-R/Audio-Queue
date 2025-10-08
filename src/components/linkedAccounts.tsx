@@ -2,25 +2,21 @@
 import React from "react";
 import Platform from "./platform";
 import dynamic from 'next/dynamic'
+import listSpecificCookies from "@/api/platformAuthentications/cookies";
  
 const SelectablePlatformsNoSSR = dynamic(
   () => Promise.resolve(SelectablePlatforms),
   { ssr: false }
 );
 
-// Returns platforms that the search will be able to use per user platform authorizations
-function getLinkedPlatforms(returnDisabled = false) {
-    if (typeof window === 'undefined') {
-        return [false, false, false, false];
-    }
-    
-    const keys = ["access_token_spotify", "access_token_youtube", "access_token_apple_music", "access_token_soundcloud"];
-    const linked = [];
+const LinkablePlatformsNoSSR = dynamic(
+  () => Promise.resolve(LinkablePlatforms),
+  { ssr: false }
+);
 
-    for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        linked[i] = localStorage.getItem(key) ? true : false;
-    }
+// Returns platforms that the search will be able to use per user platform authorizations
+function getLinkedPlatforms(returnDisabled = false) {    
+    const linked = listSpecificCookies();
 
     return !returnDisabled ? linked : linked.map(v => !v);
 }
@@ -98,5 +94,5 @@ function SelectablePlatforms() {
     )
 }
 
-export { LinkablePlatforms, LinkablePlatformsSkeleton, SelectablePlatformsNoSSR };
+export { LinkablePlatforms, LinkablePlatformsSkeleton, SelectablePlatformsNoSSR, LinkablePlatformsNoSSR };
 export default LinkablePlatforms;

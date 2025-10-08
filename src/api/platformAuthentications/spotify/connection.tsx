@@ -1,4 +1,5 @@
 import { readFromFile, writeToFile } from "../youtube/fileHandling";
+import { getToken } from "../cookies";
 
 // Spotify creating and sending an authorization request
 const client_id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
@@ -87,28 +88,34 @@ async function callAuthorizationApi(body: string, header: string): Promise<strin
     const data = await response.json();
 
     if (data.access_token != undefined) {
+        const cookieName = "access_token_spotify";
         accessToken = data.access_token;
-        localStorage.setItem("access_token_spotify", accessToken);
+
+        document.cookie = `${cookieName}=${accessToken}; Path=/; Secure; SameSite=Lax; Max-Age=3600`;
     }
     if (data.refresh_token != undefined) {
+        const cookieName = "refresh_token_spotify";
         const refreshToken = data.refresh_token;
-        localStorage.setItem("refresh_token_spotify", refreshToken);
+
+        document.cookie = `${cookieName}=${refreshToken}; Path=/; Secure; SameSite=Lax; Max-Age=3600`;
     }
 
     return accessToken;
 }
 
-function refreshAccessToken() {
+async function refreshAccessToken() {
     const header = getAuthHeader();
-    const refreshToken = localStorage.getItem("refresh_token_spotify");
+    const refreshToken = await getToken("refresh_token_spotify");
+
     let body = "grant_type=refresh_token";
     body += "&refresh_token=" + refreshToken;
     body += "&client_id" + client_id;
+
     callAuthorizationApi(body, header);
 }
 
 export async function getTracks(query: string, limit: number, developing: boolean = false): Promise<Record<string, string>[]> {
-    const accessToken = localStorage.getItem("access_token_spotify");
+    const accessToken = await getToken("access_token_spotify");
     
     if (!accessToken) {
         console.error('No access token found');

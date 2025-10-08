@@ -1,6 +1,6 @@
-'use client'
 import { Duration } from 'luxon';
 import { writeToFile, readFromFile } from "./fileHandling";
+import { getToken } from "../cookies";
 
 // Soundcloud creating and sending an authorization request
 const public_key = process.env.NEXT_PUBLIC_KEY_YT;
@@ -100,12 +100,16 @@ async function callAuthorizationApi(body: string, header: string): Promise<strin
     const data = await response.json();
 
     if (data.access_token != undefined) {
+        const cookieName = "access_token_youtube";
         accessToken = data.access_token;
-        localStorage.setItem("access_token_youtube", accessToken);
+
+        document.cookie = `${cookieName}=${accessToken}; Path=/; Secure; SameSite=Lax; Max-Age=3600`;
     }
     if (data.refresh_token != undefined) {
+        const cookieName = "refresh_token_youtube";
         const refreshToken = data.refresh_token;
-        localStorage.setItem("refresh_token_youtube", refreshToken);
+        
+        document.cookie = `${cookieName}=${refreshToken}; Path=/; Secure; SameSite=Lax; Max-Age=3600`;
     }
 
     return accessToken;
@@ -118,7 +122,7 @@ function getIframeSrc(iframe: string) {
 }
 
 export async function getTracks(query: string, limit: number, developing: boolean = false): Promise<Record<string, string>[]> {
-    const accessToken = localStorage.getItem("access_token_youtube");
+    const accessToken = await getToken("access_token_youtube");
 
     if (!accessToken) {
         console.error('No access token found');
@@ -195,7 +199,7 @@ export async function getTracks(query: string, limit: number, developing: boolea
 }
 
 export async function getVideo(id: string, index: number = 0): Promise<Record<string, string>[]> {
-    const accessToken = localStorage.getItem("access_token_youtube");
+    const accessToken = await getToken("access_token_youtube");
 
     if (!accessToken) {
         console.error('No access token found');

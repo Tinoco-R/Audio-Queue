@@ -150,7 +150,7 @@ export default function MusicPlayerSlider() {
                 audioElement.pause();
             }
         }
-    }, [paused]);
+    }, [paused, duration]);
 
     return (
         <Box id="boxIdMain" sx={{ overflow: 'auto', p: 3 }}>

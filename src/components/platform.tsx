@@ -44,7 +44,6 @@ interface PlatformProps {
 
 export default function Platform({platform, src, altSrc, children, cardSize, imgSize, disabled, linked, selectable, display}: PlatformProps) {
     const displayValue = disabled ? "none" : "block";
-    const linkedValue  = linked   ? false : true;
    
     const [currentSrc, setCurrentSrc] = useState(src);
     const [isSelected, setSelected] = useState("");
