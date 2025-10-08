@@ -86,8 +86,6 @@ async function callAuthorizationApi(body: string, header: string): Promise<strin
 
     const data = await response.json();
 
-    console.log("Data", data);
-
     if (data.access_token != undefined) {
         accessToken = data.access_token;
         localStorage.setItem("access_token_spotify", accessToken);
@@ -107,20 +105,6 @@ function refreshAccessToken() {
     body += "&refresh_token=" + refreshToken;
     body += "&client_id" + client_id;
     callAuthorizationApi(body, header);
-}
-
-async function getProfile(accessToken: string | null) {
-    accessToken = localStorage.getItem("access_token_spotify");
-
-    const response = await fetch("https://api.spotify.com/v1/me", {
-        method: "GET",
-        headers: {
-            Authorization: "Bearer " + accessToken,
-        },
-    });
-    const data = await response.json();
-
-    console.log(data);
 }
 
 export async function getTracks(query: string, limit: number, developing: boolean = false): Promise<Record<string, string>[]> {
@@ -143,6 +127,15 @@ export async function getTracks(query: string, limit: number, developing: boolea
             "Accept": "application/json; charset=utf-8",
         },
     });
+
+    if (!response.ok) {
+        // Need to find method of removing platform from being selectable after using up daily quota
+        if (response.status === 429) {
+            console.log('Quota exceeded: Spotify');
+        }
+        console.error(`Failed to fetch tracks: ${response.statusText}`);
+        return [];
+    }
 
     // If developing, pull data from saved files (DEVELOPMENT ONLY), else make API calls to YT
     // Purpose: saves YouTube API quota from being wasted while developing

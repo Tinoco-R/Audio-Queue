@@ -1,6 +1,6 @@
 'use client'
-import { duration } from "@mui/material";
 import { generateCodeVerifier, createCodeChallenge, setValueIfNotExists } from "./codeChallenge";
+import { readFromFile, writeToFile } from "../youtube/fileHandling";
 
 // Soundcloud creating and sending an authorization request
 const client_id = process.env.NEXT_PUBLIC_SOUNDCLOUD_CLIENT;
@@ -112,7 +112,7 @@ async function callAuthorizationApi(body: string, header: string): Promise<strin
     return accessToken;
 }
 
-export async function getTracks(query: string, limit: number): Promise<Record<string, string>[]> {
+export async function getTracks(query: string, limit: number, developing: boolean = false): Promise<Record<string, string>[]> {
     const accessToken = localStorage.getItem("access_token_soundcloud");
 
     if (!accessToken) {
@@ -124,7 +124,7 @@ export async function getTracks(query: string, limit: number): Promise<Record<st
 
     url += "?q=" + encodeURIComponent(query);
     url += "&access=playable";
-    url += `&limit=${limit + 1}`;
+    url += "&limit=" + encodeURIComponent(limit);
 
     const response = await fetch(url, {
         method: "GET",
@@ -135,11 +135,21 @@ export async function getTracks(query: string, limit: number): Promise<Record<st
     })
 
     if (!response.ok) {
-            console.error(`Failed to fetch tracks: ${response.statusText}`);
-            return [];
+        // Need to find method of removing platform from being selectable after using up daily quota
+        if (response.status === 429) {
+            console.log('Quota exceeded: SoundCloud');
         }
+        console.error(`Failed to fetch tracks: ${response.statusText}`);
+        return [];
+    }
 
-    const data = await response.json();
+    // If developing, pull data from saved files (DEVELOPMENT ONLY), else make API calls to YT
+    // Purpose: saves YouTube API quota from being wasted while developing
+    const data = developing ? await readFromFile("dataSC") : await response.json();
+
+    // Store data in a file (DEVELOPMENT ONLY)
+    developing ? {} : writeToFile(data, "dataSC");
+
     const tracksData = [];
 
     for (let i = 0; i < data.length; i++) {
@@ -153,7 +163,9 @@ export async function getTracks(query: string, limit: number): Promise<Record<st
             trackUrl: await getStreamableUrl(item.urn),
             duration: Math.floor(item.duration / 1000).toString(),
         }
-        tracksData.push(trackObject);
+        if(trackObject.trackUrl !== "-1") {
+            tracksData.push(trackObject);
+        }
     }    
     return tracksData;
 }
@@ -179,6 +191,10 @@ export async function getStreamableUrl(urn: string): Promise<string> {
     })
 
     if (!response.ok) {
+        // Need to find method of removing platform from being selectable after using up daily quota
+        if (response.status === 429) {
+            console.log('Quota exceeded: SoundCloud');
+        }
         console.error(`Failed to fetch streamable URL: ${response.statusText}`);
         return "-1";
     }
@@ -186,8 +202,10 @@ export async function getStreamableUrl(urn: string): Promise<string> {
     // Returns urls of type: http_mp3_128_url, hls_mp3_128_url, hls_opus_64_url, as well as preview
     const data = await response.json();
     const http_mp3_128_url    = data.http_mp3_128_url;
-    const hls_mp3_128_url     = data.hls_mp3_128_url;
-    const hls_opus_64_url     = data.hls_opus_64_url;
-    const preview_mp3_128_url = data.preview_mp3_128_url;
+    
+    //const hls_mp3_128_url     = data.hls_mp3_128_url;
+    //const hls_opus_64_url     = data.hls_opus_64_url;
+    //const preview_mp3_128_url = data.preview_mp3_128_url;
+    
     return http_mp3_128_url;
 }

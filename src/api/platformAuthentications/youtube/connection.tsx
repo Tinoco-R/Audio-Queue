@@ -1,6 +1,5 @@
 'use client'
-import { Duration } from 'luxon'; 
-import { title } from "process";
+import { Duration } from 'luxon';
 import { writeToFile, readFromFile } from "./fileHandling";
 
 // Soundcloud creating and sending an authorization request
@@ -146,6 +145,11 @@ export async function getTracks(query: string, limit: number, developing: boolea
     })
 
     if (!response.ok) {
+        // Need to find method of removing platform from being selectable after using up daily quota
+        if (response.status === 403) {
+            console.log('Quota exceeded: YouTube');
+        }
+
         console.error(`Failed to fetch tracks: ${response.statusText}`);
         return [];
     }
@@ -163,6 +167,12 @@ export async function getTracks(query: string, limit: number, developing: boolea
 
         // Get wanted metadata from video resource (embedable player and duration)
         const videoResource = developing ? await readFromFile(`video ${i}`) : await getVideo(item.id.videoId, i);
+
+        // If videoResource is empty, video wasn't returned; go to next item
+        if (videoResource.length === 0) {
+            continue; // Skip to the next iteration
+        }
+
         const player = getIframeSrc(videoResource.items[0].player.embedHtml);
 
         // YouTube provides duration in the form of ISO 8601. This converts it to seconds and sets final value as a string
@@ -207,6 +217,11 @@ export async function getVideo(id: string, index: number = 0): Promise<Record<st
     })
 
     if (!response.ok) {
+        // Need to find method of removing platform from being selectable after using up daily quota
+        if (response.status === 403) {
+            console.log('Quota exceeded: YouTube');
+        }
+
         console.error(`Failed to fetch tracks: ${response.statusText}`);
         return [];
     }

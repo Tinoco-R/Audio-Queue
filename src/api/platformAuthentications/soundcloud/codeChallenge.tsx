@@ -16,8 +16,7 @@ export function createCodeChallenge(codeVerifier: string): string {
         .replace(/\+/g, '-')
         .replace(/\//g, '_')
         .replace(/=/g, '');
-        
-    console.log("base64UrlEncoded: ", base64UrlEncoded);
+
     return base64UrlEncoded;
 }
 
@@ -30,7 +29,7 @@ export function generateCodeVerifier() {
     for (let i = 0; i < length; i++) {
         codeVerifier += characters.charAt(Math.floor(Math.random() * characters.length));
     }
-    console.log("Code Verifier: ", codeVerifier);
+    
     return codeVerifier;
 }
 

@@ -86,7 +86,7 @@ export default function SearchTop({children}: SearchTopProps) {
         }
         if(selected.includes("Apple Music")) {
             const tracks = await getTracksAppleMusic(inputValue.toString());
-            //renderTracks("Apple Music", tracks);
+            renderTracks("Apple Music", tracks);
         }
         if(selected.includes("SoundCloud")) {
             const tracks = await getTracksSoundcloud(inputValue.toString(), searchResultsLimit);

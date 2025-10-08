@@ -24,7 +24,6 @@ function removeButton() {
 }
 
 function getPlatformLogo(platform: string) {
-    const randomNumber = Math.floor(Math.random() * 4);
     const cardSize=33;
     const imgSize=25;
   
@@ -49,11 +48,13 @@ function getPlatformLogo(platform: string) {
 export default function generateResult(platform: string, trackObject: Record<string, string>, isQueueResult: boolean = false) {
     const artist    = trackObject.artist;
     const title     = trackObject.title;
+/*
     const album     = trackObject.album;
     const artwork   = trackObject.artwork;
     const urn       = trackObject.urn;
     const trackUrl  = trackObject.trackUrl;
     const duration  = trackObject.duration;
+*/
 
     const left = 10;
     const right = 12 - left;

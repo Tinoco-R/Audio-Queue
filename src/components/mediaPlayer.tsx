@@ -1,10 +1,7 @@
 import * as React from 'react';
 import Image from 'next/image';
-import Grid from '@mui/material/Grid';
-import { Item, ItemBlack } from './item';
 import LinearDeterminate from './linearProgress';
 import PauseCircleFilledIcon from '@mui/icons-material/PauseCircleFilled';
-import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 
