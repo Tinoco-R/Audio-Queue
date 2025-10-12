@@ -8,9 +8,6 @@ export default function listSpecificCookies(): boolean[] {
     const cookieString = document.cookie;
     const cookieArray = cookieString.split('; ');
 
-    console.log("cookieString", cookieString);
-    console.log("cookieArray", cookieArray);
-
     // Check for each key and add true if the cookie exists, false otherwise
     for (const key of keys) {
         let exists = false;

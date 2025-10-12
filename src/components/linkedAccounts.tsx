@@ -1,5 +1,5 @@
 'use client';
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Platform from "./platform";
 import dynamic from 'next/dynamic'
 import listSpecificCookies from "@/api/platformAuthentications/cookies";
@@ -15,7 +15,7 @@ const LinkablePlatformsNoSSR = dynamic(
 );
 
 // Returns platforms that the search will be able to use per user platform authorizations
-function getLinkedPlatforms(returnDisabled = false) {    
+function getLinkedPlatforms(returnDisabled = false) {
     const linked = listSpecificCookies();
 
     return !returnDisabled ? linked : linked.map(v => !v);
@@ -40,20 +40,20 @@ function getPlatformSources(linkedPlatforms: boolean[]) {
 }
 
 // To be used in the platform linkage page
-function LinkablePlatforms() {
+function LinkablePlatforms({linked}: {linked: boolean[]}) {
+    const keys = ["access_token_spotify", "access_token_youtube", "access_token_apple_music", "access_token_soundcloud"];
+    const platformSources = getPlatformSources(linked);
     const cardSize = 400;
     const imgSize = 300;
-    const linkedPlatforms = getLinkedPlatforms();
-    const platformSources = getPlatformSources(linkedPlatforms);
 
     return (
         <div>
             <h1 style={{display:"flex", justifyContent: "center", fontSize: "100px", fontFamily: "serif"}}>Linkable Platforms</h1>
             <div id="AccountsGrid" style={{display: "flex", flexWrap: "wrap", flexDirection: "row", gap: "1em", justifyContent: "center"}}>
-                <Platform linked={linkedPlatforms[0]} cardSize={cardSize} imgSize={imgSize - 20}  platform="Spotify"     src={platformSources[0]}></Platform>
-                <Platform linked={linkedPlatforms[1]} cardSize={cardSize} imgSize={imgSize + 100} platform="YouTube"     src={platformSources[1]}></Platform>
-                <Platform linked={linkedPlatforms[2]} cardSize={cardSize} imgSize={imgSize - 50}  platform="Apple Music" src={platformSources[2]}></Platform>
-                <Platform linked={linkedPlatforms[3]} cardSize={cardSize} imgSize={imgSize + 40}  platform="SoundCloud"  src={platformSources[3]}></Platform>
+                <Platform linked={linked[0]} cardSize={cardSize} imgSize={imgSize - 20}  platform="Spotify"     src={linked[0] ? "/spotify/Primary_Logo_Green_RGB.svg" : "/spotify/Spotify_Primary_Logo_RGB_White.png"}></Platform>
+                <Platform linked={linked[1]} cardSize={cardSize} imgSize={imgSize + 100} platform="YouTube"     src={linked[1] ? "/youtube/yt_icon_red_digital.png" : "/youtube/yt_icon_white_digital.png"}></Platform>
+                <Platform linked={linked[2]} cardSize={cardSize} imgSize={imgSize - 50}  platform="Apple Music" src={linked[2] ? "/apple/Apple_Music_Icon_RGB_sm_073120.svg" : "/apple/Apple_Music_Icon_wht_sm_073120.svg"}></Platform>
+                <Platform linked={linked[3]} cardSize={cardSize} imgSize={imgSize + 40}  platform="SoundCloud"  src={linked[3] ? "/soundcloud/soundcloud.svg" : "/soundcloud/cloudmark-white-transparent.png"}></Platform>
             </div>
         </div>
     )
