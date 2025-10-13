@@ -103,17 +103,28 @@ async function callAuthorizationApi(body: string, header: string): Promise<strin
         const cookieName = "access_token_youtube";
         accessToken = data.access_token;
 
-        document.cookie = `${cookieName}=${accessToken}; Path=/; Secure; SameSite=Lax; Max-Age=3600`;
+        document.cookie = `${cookieName}=${accessToken}; Path=/; Secure; SameSite=Strict; Max-Age=3600`;
     }
     if (data.refresh_token != undefined) {
         const cookieName = "refresh_token_youtube";
         const refreshToken = data.refresh_token;
         
-        document.cookie = `${cookieName}=${refreshToken}; Path=/; Secure; SameSite=Lax; Max-Age=3600`;
+        document.cookie = `${cookieName}=${refreshToken}; Path=/; Secure; SameSite=Strict; Max-Age=3600`;
     }
 
     return accessToken;
 }
+
+/* async function refreshAccessToken() {
+    const header = getAuthHeader();
+    const refreshToken = await getToken("refresh_token_youtube");
+
+    let body = "grant_type=refresh_token";
+    body += "&refresh_token=" + refreshToken;
+    body += "&client_id=" + client_id;
+
+    await callAuthorizationApi(body, header);
+} */
 
 function getIframeSrc(iframe: string) {
     const regex = /src="([^"]+)"/;
@@ -125,7 +136,6 @@ export async function getTracks(query: string, limit: number, developing: boolea
     const accessToken = await getToken("access_token_youtube");
 
     if (!accessToken) {
-        console.error('No access token found');
         return [];
     }
 
@@ -202,7 +212,6 @@ export async function getVideo(id: string, index: number = 0): Promise<Record<st
     const accessToken = await getToken("access_token_youtube");
 
     if (!accessToken) {
-        console.error('No access token found');
         return [];
     }
 

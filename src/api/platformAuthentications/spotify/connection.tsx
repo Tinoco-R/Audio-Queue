@@ -91,13 +91,13 @@ async function callAuthorizationApi(body: string, header: string): Promise<strin
         const cookieName = "access_token_spotify";
         accessToken = data.access_token;
 
-        document.cookie = `${cookieName}=${accessToken}; Path=/; Secure; SameSite=Lax; Max-Age=3600`;
+        document.cookie = `${cookieName}=${accessToken}; Path=/; Secure; SameSite=Strict; Max-Age=3600`;
     }
     if (data.refresh_token != undefined) {
         const cookieName = "refresh_token_spotify";
         const refreshToken = data.refresh_token;
 
-        document.cookie = `${cookieName}=${refreshToken}; Path=/; Secure; SameSite=Lax; Max-Age=3600`;
+        document.cookie = `${cookieName}=${refreshToken}; Path=/; Secure; SameSite=Strict; Max-Age=3600`;
     }
 
     return accessToken;
@@ -109,17 +109,26 @@ async function refreshAccessToken() {
 
     let body = "grant_type=refresh_token";
     body += "&refresh_token=" + refreshToken;
-    body += "&client_id" + client_id;
+    body += "&client_id=" + client_id;
 
-    callAuthorizationApi(body, header);
+    await callAuthorizationApi(body, header);
 }
 
 export async function getTracks(query: string, limit: number, developing: boolean = false): Promise<Record<string, string>[]> {
     const accessToken = await getToken("access_token_spotify");
+    const refreshToken = await getToken("refresh_token_spotify");
     
     if (!accessToken) {
-        console.error('No access token found');
-        return [];
+        if (refreshToken) {
+            console.log('[getTracks] No access token. Refreshing...');
+            await refreshAccessToken();
+            return getTracks(query, limit, developing);
+        }
+        else{
+            // Force reauthentication for singular platform (probably better to do all platforms at once)
+            //await requestSpotifyAuthorization();
+            return [];
+        }
     }
 
     let url = searchURL;

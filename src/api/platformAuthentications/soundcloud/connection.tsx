@@ -104,24 +104,43 @@ async function callAuthorizationApi(body: string, header: string): Promise<strin
         const cookieName = "access_token_soundcloud";
         accessToken = data.access_token;
 
-        document.cookie = `${cookieName}=${accessToken}; Path=/; Secure; SameSite=Lax; Max-Age=3600`;
+        document.cookie = `${cookieName}=${accessToken}; Path=/; Secure; SameSite=Strict; Max-Age=3600`;
     }
     if (data.refresh_token != undefined) {
         const cookieName = "refresh_token_soundcloud";
         const refreshToken = data.refresh_token;
 
-        document.cookie = `${cookieName}=${refreshToken}; Path=/; Secure; SameSite=Lax; Max-Age=3600`;
+        document.cookie = `${cookieName}=${refreshToken}; Path=/; Secure; SameSite=Strict; Max-Age=3600`;
     }
 
     return accessToken;
 }
 
+async function refreshAccessToken() {
+    const refreshToken = await getToken("refresh_token_soundcloud");
+
+    let body = "grant_type=refresh_token";
+    body += "&client_id=" + client_id;
+    body += "&client_secret=" + client_secret;
+    body += "&refresh_token=" + refreshToken;
+
+    const header = getAuthHeader();
+    await callAuthorizationApi(body, header);    
+}
+
 export async function getTracks(query: string, limit: number, developing: boolean = false): Promise<Record<string, string>[]> {
     const accessToken = await getToken("access_token_soundcloud");
+    const refreshToken = await getToken("refresh_token_soundcloud");
 
     if (!accessToken) {
-        console.error('No access token found');
-        return [];
+        if (refreshToken) {
+            console.log('[getTracks] No access token. Refreshing...');
+            await refreshAccessToken();
+            return getTracks(query, limit, developing);
+        }
+        else{
+            return [];
+        }
     }
 
     let url = trackURL;
@@ -176,10 +195,17 @@ export async function getTracks(query: string, limit: number, developing: boolea
 
 export async function getStreamableUrl(urn: string): Promise<string> {
     const accessToken = await getToken("access_token_soundcloud");
+    const refreshToken = await getToken("refresh_token_soundcloud");
 
     if (!accessToken) {
-        console.error('No access token found');
-        return "-1";
+        if (refreshToken) {
+            console.log('[getStreamableUrl] No access token. Refreshing...');
+            await refreshAccessToken();
+            return getStreamableUrl(urn);
+        }
+        else{
+            return "-1";
+        }
     }
 
     let url = trackURL;
